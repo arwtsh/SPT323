@@ -3,19 +3,72 @@
 version = 3
 
 [[package]]
+name = "inventory"
+version = "0.1.0"
+
+[[package]]
+name = "item1"
+version = "0.1.0"
+dependencies = [
+ "item_id",
+ "item_template",
+]
+
+[[package]]
+name = "item2"
+version = "0.1.0"
+
+[[package]]
+name = "item3"
+version = "0.1.0"
+
+[[package]]
+name = "item4"
+version = "0.1.0"
+
+[[package]]
+name = "item5"
+version = "0.1.0"
+
+[[package]]
+name = "item_id"
+version = "0.1.0"
+
+[[package]]
+name = "item_manager"
+version = "0.1.0"
+dependencies = [
+ "item1",
+ "item2",
+ "item3",
+ "item4",
+ "item5",
+ "item_id",
+ "item_template",
+]
+
+[[package]]
+name = "item_template"
+version = "0.1.0"
+dependencies = [
+ "item_id",
+]
+
+[[package]]
 name = "main"
 version = "0.1.0"
 dependencies = [
- "scene_1",
- "scene_10",
- "scene_2",
- "scene_3",
- "scene_4",
- "scene_5",
- "scene_6",
- "scene_7",
- "scene_8",
- "scene_9",
+ "item_id",
+ "item_manager",
+ "player_manager",
+ "scene_manager",
+]
+
+[[package]]
+name = "player_manager"
+version = "0.1.0"
+dependencies = [
+ "inventory",
 ]
 
 [[package]]
@@ -57,3 +110,19 @@ version = "0.1.0"
 [[package]]
 name = "scene_9"
 version = "0.1.0"
+
+[[package]]
+name = "scene_manager"
+version = "0.1.0"
+dependencies = [
+ "scene_1",
+ "scene_10",
+ "scene_2",
+ "scene_3",
+ "scene_4",
+ "scene_5",
+ "scene_6",
+ "scene_7",
+ "scene_8",
+ "scene_9",
+]

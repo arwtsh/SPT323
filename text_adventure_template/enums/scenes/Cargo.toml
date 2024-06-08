@@ -1,7 +1,6 @@
 [package]
-name = "player_manager"
+name = "scenes"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-inventory = {path = "../inventory"}
