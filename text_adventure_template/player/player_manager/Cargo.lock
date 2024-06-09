@@ -3,12 +3,12 @@
 version = 3
 
 [[package]]
-name = "item_id"
+name = "inventory"
 version = "0.1.0"
 
 [[package]]
-name = "item_template"
+name = "player_manager"
 version = "0.1.0"
 dependencies = [
- "item_id",
+ "inventory",
 ]

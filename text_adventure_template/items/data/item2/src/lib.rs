@@ -1,14 +1,11 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+use item_template::ItemData;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+///Get the Item_Data for this item.
+pub fn get_item_data() -> ItemData {
+    ItemData{ //Create new item.
+        identifiers: vec![ //populate the identifiers with string literals. These will be what is used to match player input this item.
+            "item2".to_string(),
+            "Item2".to_string()],
+        id: item_id::Items::Item2 //Set the id for this item.
     }
 }

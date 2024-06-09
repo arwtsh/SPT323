@@ -6,9 +6,17 @@ version = 3
 name = "item1"
 version = "0.1.0"
 dependencies = [
+ "item_id",
  "item_template",
 ]
 
 [[package]]
+name = "item_id"
+version = "0.1.0"
+
+[[package]]
 name = "item_template"
 version = "0.1.0"
+dependencies = [
+ "item_id",
+]

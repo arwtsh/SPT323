@@ -6,12 +6,17 @@ version = 3
 name = "item1"
 version = "0.1.0"
 dependencies = [
+ "item_id",
  "item_template",
 ]
 
 [[package]]
 name = "item2"
 version = "0.1.0"
+dependencies = [
+ "item_id",
+ "item_template",
+]
 
 [[package]]
 name = "item3"
@@ -26,6 +31,10 @@ name = "item5"
 version = "0.1.0"
 
 [[package]]
+name = "item_id"
+version = "0.1.0"
+
+[[package]]
 name = "item_manager"
 version = "0.1.0"
 dependencies = [
@@ -34,9 +43,13 @@ dependencies = [
  "item3",
  "item4",
  "item5",
+ "item_id",
  "item_template",
 ]
 
 [[package]]
 name = "item_template"
 version = "0.1.0"
+dependencies = [
+ "item_id",
+]
