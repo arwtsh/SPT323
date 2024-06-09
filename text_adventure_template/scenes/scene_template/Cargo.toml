@@ -1,0 +1,7 @@
+[package]
+name = "scene_template"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+scene_id = {path = "../scene_id"}
