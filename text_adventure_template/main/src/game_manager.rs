@@ -1,6 +1,6 @@
 use item_manager::ItemManager;
 use scene_manager::SceneManager;
-use commands::CommandManager;
+use crate::command_manager::CommandManager;
 
 ///A container for every manager that can be used by commands. 
 //Every command will accept a Managers reference as a simple dependency injection pattern.
@@ -43,7 +43,7 @@ impl GameManager {
     }
 
     ///Starts the game.
-    pub fn StartGame(&self) {
-        self.managers.command_manager.parse_user_input("Quit".to_string());
+    pub fn start_game(&self) {
+        self.managers.command_manager.parse_user_input("left".to_string(), &self.managers);
     }
 }

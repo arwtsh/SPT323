@@ -1,10 +1,21 @@
 use game_manager::GameManager;
 
 mod game_manager;
+mod command_manager;
+
+//
+// ADD TO THE MODS BELOW WHEN ADDING NEW COMMANDS
+//
+pub mod commands {
+    pub mod command_exit;
+    pub mod command_help;
+    pub mod command_left;
+    pub mod command_right;
+}
 
 fn main() {
     let game_manager: GameManager = GameManager::new();
-    game_manager.StartGame();
+    game_manager.start_game();
 }
 
 ///Display to the terminal how to play the game and the commands to use.

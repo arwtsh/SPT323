@@ -1,4 +1,5 @@
-use crate::CommandData;
+use crate::game_manager::Managers;
+use crate::command_manager::CommandData;
 
 ///Get the CommandData for this command.
 pub fn get_command_data() -> CommandData {
@@ -18,6 +19,6 @@ pub fn get_command_data() -> CommandData {
     }
 }
 
-pub fn call_command(params: String) {
+pub fn call_command(params: String, managers: &Managers) {
     println!("EXIT!");
 }

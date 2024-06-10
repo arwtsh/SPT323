@@ -1,18 +1,25 @@
 use std::collections::HashMap;
-use crate::commands::command_help;
+use crate::game_manager::Managers;
+
+//
+// ADD TO THE USES BELOW WHEN ADDING NEW COMMANDS
+//
 use crate::commands::command_exit;
+use crate::commands::command_help;
+use crate::commands::command_left;
+use crate::commands::command_right;
 
-
-mod commands {
-    pub mod command_exit;
-    pub mod command_help;
-}
-
+//
+// ADD TO THE ENUM BELOW WHEN ADDING NEW COMMANDS
+//
+///An ID for commands
 #[derive(PartialEq, Eq, Hash, Clone, Copy)]
 enum CommandId {
     None,
     Exit,
-    Help
+    Help,
+    Left,
+    Right
 }
 
 impl CommandId {
@@ -20,13 +27,15 @@ impl CommandId {
         match *self {
             CommandId::None => "None",
             CommandId::Exit => "Exit",
-            CommandId::Help => "Help"
+            CommandId::Help => "Help",
+            CommandId::Left => "Left",
+            CommandId::Right => "Right"
         }
     }
 }
 
 pub struct CommandData {
-    identifiers: Vec<String>
+    pub(crate) identifiers: Vec<String>
 }
 
 ///Manages interpretation of player input.
@@ -65,14 +74,14 @@ impl CommandManager {
     }
 
     ///Parses user input into command format and calls the command.
-    pub fn parse_user_input(&self, input: String) {
+    pub fn parse_user_input(&self, input: String, managers: &Managers) {
         let input_split = input.trim().split_once(' ');
         if input_split.is_some() { //check if it split correctly
             let split_result = input_split.unwrap();
-            self.interpret_command(split_result.0.to_string(), split_result.1.to_string());
+            self.interpret_command(split_result.0.to_string(), split_result.1.to_string(), managers);
         } else {
             //If it did not split, the command is all one word, such as "help" or "exit"
-            self.interpret_command(input, "".to_string());
+            self.interpret_command(input, "".to_string(), managers);
         }
     }
 
@@ -89,14 +98,14 @@ impl CommandManager {
     }
 
     ///Interpret the split player input.
-    fn interpret_command(&self, command: String, params: String) {
+    fn interpret_command(&self, command: String, params: String, managers: &Managers) {
         let command_id: CommandId = self.parse_command(&command); //Convert the string to enum
         if command_id == CommandId::None { //Make sure the command the user typed exhists.
             println!("Command {} does not match any commands. Use \"help\" to list all the different commands.", command);
         }
         else {
             //Call the appropriate command.
-            call_command(command_id, params);
+            call_command(command_id, params, managers);
         }
     }
 }
@@ -111,14 +120,18 @@ fn find_command_data() -> HashMap<CommandId, CommandData> {
     let mut map = HashMap::new();
     map.insert(CommandId::Help, command_help::get_command_data());
     map.insert(CommandId::Exit, command_exit::get_command_data());
+    map.insert(CommandId::Left, command_left::get_command_data());
+    map.insert(CommandId::Right, command_right::get_command_data());
     map
 }
 
 //Until I know how to do OOP, I have to call functions individually.
-fn call_command(command: CommandId, input: String) {
+fn call_command(command: CommandId, input: String, managers: &Managers) {
     match command {
         CommandId::None => println!("Command does not exhist."),
-        CommandId::Exit => command_exit::call_command(input),
-        CommandId::Help => command_help::call_command(input)
+        CommandId::Exit => command_exit::call_command(input, managers),
+        CommandId::Help => command_help::call_command(input, managers),
+        CommandId::Left => command_left::call_command(input, managers),
+        CommandId::Right => command_right::call_command(input, managers)
     }
 }
