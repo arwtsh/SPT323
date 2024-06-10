@@ -1,12 +1,10 @@
-use item_id::Items;
-use scene_id::Scenes;
+use game_manager::GameManager;
+
+mod game_manager;
 
 fn main() {
-    let item_manager: item_manager::ItemManager = item_manager::ItemManager::init();
-    let scene_manager: scene_manager::SceneManager = scene_manager::SceneManager::init();
-
-    let scene: Scenes = scene_manager.parse_scene("scene1".to_string());
-    print!("Scene: {}", scene.to_string());
+    let game_manager: GameManager = GameManager::new();
+    game_manager.StartGame();
 }
 
 ///Display to the terminal how to play the game and the commands to use.

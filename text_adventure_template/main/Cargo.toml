@@ -9,3 +9,4 @@ player_manager = {path = "../player/player_manager"}
 item_manager = {path = "../items/item_manager"}
 item_id = {path = "../items/item_id"}
 scene_id = {path = "../scenes/scene_id"}
+commands = {path = "../commands"}

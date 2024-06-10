@@ -3,6 +3,10 @@
 version = 3
 
 [[package]]
+name = "commands"
+version = "0.1.0"
+
+[[package]]
 name = "inventory"
 version = "0.1.0"
 
@@ -62,6 +66,7 @@ dependencies = [
 name = "main"
 version = "0.1.0"
 dependencies = [
+ "commands",
  "item_id",
  "item_manager",
  "player_manager",
