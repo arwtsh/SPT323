@@ -1,0 +1,7 @@
+[package]
+name = "dependency_test"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dependency_1 = {path = "../dependency_1"}

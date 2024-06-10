@@ -1,0 +1,8 @@
+[package]
+name = "item1"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+item_template = {path = "../../item_template"}
+item_id = {path = "../../item_id"}

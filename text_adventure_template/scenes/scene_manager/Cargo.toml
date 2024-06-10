@@ -1,0 +1,18 @@
+[package]
+name = "scene_manager"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+scene_id = {path = "../scene_id"}
+scene_template = {path = "../scene_template"}
+scene_1 = {path = "../data/scene_1"}
+scene_2 = {path = "../data/scene_2"}
+scene_3 = {path = "../data/scene_3"}
+scene_4 = {path = "../data/scene_4"}
+scene_5 = {path = "../data/scene_5"}
+scene_6 = {path = "../data/scene_6"}
+scene_7 = {path = "../data/scene_7"}
+scene_8 = {path = "../data/scene_8"}
+scene_9 = {path = "../data/scene_9"}
+scene_10 = {path = "../data/scene_10"}
