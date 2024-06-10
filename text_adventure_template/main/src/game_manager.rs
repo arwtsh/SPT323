@@ -7,7 +7,6 @@ use crate::command_manager::CommandManager;
 pub struct Managers {
     item_manager: ItemManager,
     scene_manager: SceneManager,
-    command_manager: CommandManager
 }
 
 impl Managers {
@@ -16,18 +15,17 @@ impl Managers {
     pub fn get_item_manager(&self) -> &ItemManager {
         &self.item_manager
     }
-    pub fn get_scene_manager(&self) -> &SceneManager {
-        &self.scene_manager
-    }
-    pub fn get_command_manager(&self) -> &CommandManager {
-        &self.command_manager
+    pub fn get_scene_manager(&mut self) -> &mut SceneManager {
+        &mut self.scene_manager
     }
 }
 
 ///Holds the base logic for all other managers in the game, as well as the main game loop.
 pub struct GameManager {
     ///A container for every manager in the game.
-    managers: Managers
+    managers: Managers,
+    //The CommandManager is not included with the managers because it will cause mutable reference borrowing errors.
+    command_manager: CommandManager
 }
 
 impl GameManager {
@@ -37,13 +35,28 @@ impl GameManager {
             managers: Managers {
                 item_manager: ItemManager::init(),
                 scene_manager: SceneManager::init(),
-                command_manager: CommandManager::init()
-            }
+            },
+            command_manager: CommandManager::init()
         }
     }
 
     ///Starts the game.
-    pub fn start_game(&self) {
-        self.managers.command_manager.parse_user_input("left".to_string(), &self.managers);
+    pub fn start_game(&mut self) {
+        //Start the main game loop
+        self.game_loop();
     }
+
+    ///The main game loop.
+    fn game_loop(&mut self) {
+        //Declare input buffer
+        let mut user_input = String::new();
+
+        //Infinite loop
+        loop {
+            user_input.clear(); //Clear previous user input.
+            std::io::stdin().read_line(&mut user_input).expect("Failed to read user input."); //Read user input from terminal.
+            self.command_manager.parse_user_input(&user_input.trim().to_string(), &mut self.managers); //Interpret the player input.
+        }
+    }
+
 }

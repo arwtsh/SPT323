@@ -8,7 +8,9 @@ pub struct SceneManager {
     //It is in a HashMap, meaning you can access the SceneData with just the SceneId enum.
     all_scene_data : HashMap<Scenes, SceneData>,
     //A map connecting strings to SceneIDs. This is used to parse user input.
-    scene_parses: HashMap<String, Scenes>
+    scene_parses: HashMap<String, Scenes>,
+    //The current scene the player is in.
+    current_scene: Scenes
 }
 
 impl SceneManager {
@@ -17,9 +19,11 @@ impl SceneManager {
         //Declare a new instance of SceneManager
         let mut manager = SceneManager {
             all_scene_data: find_scene_data(), //Find every SceneData and store it.
-            scene_parses: HashMap::new() //Initialize the scene_parse hash map.
+            scene_parses: HashMap::new(), //Initialize the scene_parse hash map.
+            current_scene: Scenes::Scene1 //Set Scene1 as the starting scene.
         };
         manager.compile_scene_parses(); //Populate the scene_parse hash map.
+        manager.move_scenes(manager.current_scene);
         manager //Return the new instance.
     }
 
@@ -51,6 +55,41 @@ impl SceneManager {
             Scenes::None
         }
     }
+
+    fn get_scene_data(&self, scene: Scenes) -> &SceneData {
+        //Get the result from the hash map. 
+        //If the enum does not exist in the map, then the program should panic.
+        let result = self.all_scene_data.get(&scene); 
+        if result.is_some() {
+            result.unwrap()
+        } else {
+            panic!("Scene {} does not have an entry in the all_scene_data hash map.", scene.to_string());
+        }
+    }
+
+    //The player moved to the right.
+    pub fn move_right(&mut self) {
+        //Get the current scene data
+        let current_scene_data = self.get_scene_data(self.current_scene);
+        self.move_scenes(current_scene_data.right_scene);
+    }
+
+     //The player moved to the left.
+     pub fn move_left(&mut self) {
+        //Get the current scene data
+        let current_scene_data = self.get_scene_data(self.current_scene);
+        self.move_scenes(current_scene_data.left_scene);
+    }
+
+    fn move_scenes(&mut self, move_to: Scenes) {
+        //Set new current scene
+        self.current_scene = move_to;
+        let new_scene_data = self.get_scene_data(self.current_scene);
+        println!("{}", new_scene_data.description);
+        if new_scene_data.left_scene == Scenes::None {
+            std::process::exit(0);
+        }
+    }
 }
 
 //
@@ -63,6 +102,14 @@ fn find_scene_data() -> HashMap<Scenes, SceneData> {
     let mut map = HashMap::new();
     map.insert(Scenes::Scene1, scene_1::get_scene_data());
     map.insert(Scenes::Scene2, scene_2::get_scene_data());
+    map.insert(Scenes::Scene3, scene_3::get_scene_data());
+    map.insert(Scenes::Scene4, scene_4::get_scene_data());
+    map.insert(Scenes::Scene5, scene_5::get_scene_data());
+    map.insert(Scenes::Scene6, scene_6::get_scene_data());
+    map.insert(Scenes::Scene7, scene_7::get_scene_data());
+    map.insert(Scenes::Scene8, scene_8::get_scene_data());
+    map.insert(Scenes::Scene9, scene_9::get_scene_data());
+    map.insert(Scenes::Scene10, scene_10::get_scene_data());
     map
 }
 

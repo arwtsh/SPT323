@@ -14,6 +14,6 @@ pub fn get_command_data() -> CommandData {
     }
 }
 
-pub fn call_command(params: String, managers: &Managers) {
-    println!("RIGHT!");
+pub fn call_command(params: String, managers: &mut Managers) {
+    managers.get_scene_manager().move_right();
 }

@@ -74,11 +74,11 @@ impl CommandManager {
     }
 
     ///Parses user input into command format and calls the command.
-    pub fn parse_user_input(&self, input: String, managers: &Managers) {
+    pub fn parse_user_input(&self, input: &String, managers: &mut Managers) {
         let input_split = input.trim().split_once(' ');
         if input_split.is_some() { //check if it split correctly
             let split_result = input_split.unwrap();
-            self.interpret_command(split_result.0.to_string(), split_result.1.to_string(), managers);
+            self.interpret_command(&split_result.0.to_string(), split_result.1.to_string(), managers);
         } else {
             //If it did not split, the command is all one word, such as "help" or "exit"
             self.interpret_command(input, "".to_string(), managers);
@@ -98,7 +98,7 @@ impl CommandManager {
     }
 
     ///Interpret the split player input.
-    fn interpret_command(&self, command: String, params: String, managers: &Managers) {
+    fn interpret_command(&self, command: &String, params: String, managers: &mut Managers) {
         let command_id: CommandId = self.parse_command(&command); //Convert the string to enum
         if command_id == CommandId::None { //Make sure the command the user typed exhists.
             println!("Command {} does not match any commands. Use \"help\" to list all the different commands.", command);
@@ -126,7 +126,7 @@ fn find_command_data() -> HashMap<CommandId, CommandData> {
 }
 
 //Until I know how to do OOP, I have to call functions individually.
-fn call_command(command: CommandId, input: String, managers: &Managers) {
+fn call_command(command: CommandId, input: String, managers: &mut Managers) {
     match command {
         CommandId::None => println!("Command does not exhist."),
         CommandId::Exit => command_exit::call_command(input, managers),

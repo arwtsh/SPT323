@@ -19,6 +19,7 @@ pub fn get_command_data() -> CommandData {
     }
 }
 
+///Run the logic of this command
 pub fn call_command(params: String, managers: &Managers) {
-    println!("EXIT!");
+    std::process::exit(0); //Exit the game
 }
