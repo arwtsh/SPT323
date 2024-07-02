@@ -2,6 +2,35 @@ use std::collections::HashMap;
 use item_id::Items;
 use item_template::ItemData;
 
+/// The singleton of the ItemManager
+static mut INSTANCE: Option<ItemManager> = Option::None;
+
+/// Get the ItemManager singleton as immutable.
+pub fn get_item_manager() -> &'static ItemManager {
+    let item_manager: &ItemManager;
+    unsafe {
+        //Initialize ItemManager if it hasn't been already.
+        if INSTANCE.is_none() {
+            INSTANCE = Option::Some(ItemManager::init());
+        }
+        item_manager = INSTANCE.as_ref().unwrap();
+    }
+    item_manager
+}
+
+/// Get the ItemManager singleton as mutable.
+pub fn get_mut_item_manager() -> &'static mut ItemManager {
+    let item_manager: &mut ItemManager;
+    unsafe {
+        //Initialize ItemManager if it hasn't been already.
+        if INSTANCE.is_none() {
+            INSTANCE = Option::Some(ItemManager::init());
+        }
+        item_manager = INSTANCE.as_mut().unwrap();
+    }
+    item_manager
+}
+
 pub struct ItemManager {
     //Information about every item. This does not change or unload during gameplay.
     //This is mainly used to access items.

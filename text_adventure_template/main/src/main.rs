@@ -1,4 +1,7 @@
-use game_manager::GameManager;
+use command_manager::get_command_manager;
+use game_manager::get_game_manager;
+use item_manager::get_item_manager;
+use scene_manager::get_scene_manager;
 
 mod game_manager;
 mod command_manager;
@@ -14,6 +17,16 @@ pub mod commands {
 }
 
 fn main() {
-    let mut game_manager: GameManager = GameManager::new();
-    game_manager.start_game();
+    load_start();
+    game_manager::start_game();
+}
+
+/// Load all the necessary items into memory at the start of the application.
+fn load_start() {
+    //Call each of the managers once so that they generate at the start of the application. 
+    //This isn't necessary entirely necessary, since they will automatically load the first time their needed, but it makes sence happenng here.
+    get_command_manager();
+    get_game_manager();
+    get_item_manager();
+    get_scene_manager();
 }

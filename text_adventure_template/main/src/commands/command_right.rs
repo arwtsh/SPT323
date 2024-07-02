@@ -1,19 +1,21 @@
-use crate::game_manager::Managers;
-use crate::command_manager::CommandData;
+use scene_manager::get_mut_scene_manager;
+use crate::command_manager::Command;
 
-///Get the CommandData for this command.
-pub fn get_command_data() -> CommandData {
-    CommandData{ //Create new command data.
-        identifiers: vec![ //populate the identifiers with string literals. These will be what is used to match player input this command.
+/// A way for the player to move locations.
+/// Moves the player to the scene marked "right"
+pub struct CommandRight;
+
+impl Command for CommandRight {
+    fn get_identifiers(&self) -> Vec<String> {
+        vec![ //populate the identifiers with string literals. These will be what is used to match player input this command.
             "right".to_string(),
             "RIGHT".to_string(),
             "Right".to_string(),
             "r".to_string(),
             "R".to_string()
-        ],
+        ]
     }
-}
-
-pub fn call_command(params: String, managers: &mut Managers) {
-    managers.get_scene_manager().move_right();
+    fn call_command(&self, _params: &String) {
+        get_mut_scene_manager().move_right();
+    }
 }

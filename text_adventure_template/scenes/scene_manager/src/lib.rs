@@ -2,6 +2,35 @@ use std::collections::HashMap;
 use scene_id::Scenes;
 use scene_template::SceneData;
 
+/// The singleton of the SceneManager
+static mut INSTANCE: Option<SceneManager> = Option::None;
+
+/// Get the SceneManager singleton as immutable.
+pub fn get_scene_manager() -> &'static SceneManager {
+    let scene_manager: &SceneManager;
+    unsafe {
+        //Initialize SceneManager if it hasn't been already.
+        if INSTANCE.is_none() {
+            INSTANCE = Option::Some(SceneManager::init());
+        }
+        scene_manager = INSTANCE.as_ref().unwrap();
+    }
+    scene_manager
+}
+
+/// Get the SceneManager singleton as mutable.
+pub fn get_mut_scene_manager() -> &'static mut SceneManager {
+    let scene_manager: &mut SceneManager;
+    unsafe {
+        //Initialize SceneManager if it hasn't been already.
+        if INSTANCE.is_none() {
+            INSTANCE = Option::Some(SceneManager::init());
+        }
+        scene_manager = INSTANCE.as_mut().unwrap();
+    }
+    scene_manager
+}
+
 pub struct SceneManager {
     //Information about every scene. This does not change or unload during gameplay.
     //This is mainly used to access scenes.
