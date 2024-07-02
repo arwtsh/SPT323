@@ -4,8 +4,17 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-scene_manager = {path = "../scenes/scene_manager"}
-player_manager = {path = "../player/player_manager"}
-item_manager = {path = "../items/item_manager"}
-item_id = {path = "../items/item_id"}
-scene_id = {path = "../scenes/scene_id"}
+items = {path = "../items"}
+scene_util = {path = "../scene_util"}
+
+
+scene_1 = {path = "../scenes/scene_1"}
+scene_2 = {path = "../scenes/scene_2"}
+scene_3 = {path = "../scenes/scene_3"}
+scene_4 = {path = "../scenes/scene_4"}
+scene_5 = {path = "../scenes/scene_5"}
+scene_6 = {path = "../scenes/scene_6"}
+scene_7 = {path = "../scenes/scene_7"}
+scene_8 = {path = "../scenes/scene_8"}
+scene_9 = {path = "../scenes/scene_9"}
+scene_10 = {path = "../scenes/scene_10"}

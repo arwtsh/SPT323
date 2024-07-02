@@ -58,15 +58,26 @@ fn game_loop() {
     //Declare input buffer
     let mut user_input = String::new();
 
-    //Infinite loop
-    loop {
+    //Loop while the game is active.
+    while get_game_manager().is_game_active {
         user_input.clear(); //Clear previous user input.
         std::io::stdin().read_line(&mut user_input).expect("Failed to read user input."); //Read user input from terminal.
         parse_user_input(&user_input.trim().to_string()); //Interpret the player input.
     }
+
+    //Do code logic that occurs when the game is exiting.
+    game_shutdown();
 }
 
-/// Exit the game
+/// Tells the game loop to exit the game at the end of the next loop.
+/// If an immediate exit is desired, std::process::exit(0); should be used instead.
 pub fn quit_game() {
-    std::process::exit(0); //Exit the game
+    //Tell the game manager the game is no longer active.
+    get_mut_game_manager().is_game_active = false;
+}
+
+fn game_shutdown() {
+    //Game should be automatically exiting normally
+    //We could call std::process::exit(0); to force the game to close, though.
+    print!("Thanks for playing!");
 }

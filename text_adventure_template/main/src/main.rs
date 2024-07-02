@@ -2,9 +2,11 @@ use command_manager::get_command_manager;
 use game_manager::get_game_manager;
 use item_manager::get_item_manager;
 use scene_manager::get_scene_manager;
+use items::item_manager;
 
 mod game_manager;
 mod command_manager;
+mod scene_manager;
 
 //
 // ADD TO THE MODS BELOW WHEN ADDING NEW COMMANDS

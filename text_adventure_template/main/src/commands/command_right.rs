@@ -1,4 +1,4 @@
-use scene_manager::get_mut_scene_manager;
+use crate::scene_manager::get_mut_scene_manager;
 use crate::command_manager::Command;
 
 /// A way for the player to move locations.
