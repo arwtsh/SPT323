@@ -1,4 +1,5 @@
 use crate::command_manager::parse_user_input;
+use crate::scene_manager;
 
 /// The singleton of the GameManager
 static mut INSTANCE: Option<GameManager> = Option::None;
@@ -66,7 +67,7 @@ fn game_loop() {
     }
 
     //Do code logic that occurs when the game is exiting.
-    game_shutdown();
+    end_loop();
 }
 
 /// Tells the game loop to exit the game at the end of the next loop.
@@ -76,6 +77,29 @@ pub fn quit_game() {
     get_mut_game_manager().is_game_active = false;
 }
 
+/// Code that executes when the game is attempting to quit
+fn end_loop() {
+    //Ask the user if they want to play again.
+    println!("Do you want to play again? (y/n)");
+
+    let mut user_input = String::new();
+    std::io::stdin().read_line(&mut user_input).expect("Failed to read user input."); //Read user input from terminal.
+    if ["y", "Y", "yes", "Yes", "YES"].contains(&user_input.trim()){
+        restart_game(); //Start the game over.
+    }
+    else {
+        game_shutdown();
+    }
+}
+
+/// Restarts the game
+fn restart_game() {
+    scene_manager::get_mut_scene_manager().reset(); //Move the player to the first location again.
+
+    start_game(); //Start the game loop again.
+}
+
+/// Code that is ran when the game shuts down
 fn game_shutdown() {
     //Game should be automatically exiting normally
     //We could call std::process::exit(0); to force the game to close, though.

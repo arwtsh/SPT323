@@ -105,7 +105,7 @@ impl SceneManager {
     }
 
      //The player moved to the left.
-     pub fn move_left(&mut self) {
+    pub fn move_left(&mut self) {
         //Get the current scene data
         let current_scene_data = self.get_scene_data(self.current_scene);
         self.move_scenes(current_scene_data.left_scene);
@@ -119,6 +119,11 @@ impl SceneManager {
         if new_scene_data.left_scene == Scenes::None {
             game_manager::quit_game();
         }
+    }
+
+    /// Reset the current scenes to the beginning.
+    pub fn reset(&mut self) {
+        self.move_scenes(Scenes::Scene1);
     }
 }
 
