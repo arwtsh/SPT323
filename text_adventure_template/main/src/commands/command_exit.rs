@@ -1,10 +1,12 @@
-use crate::game_manager::Managers;
-use crate::command_manager::CommandData;
+use crate::command_manager::Command;
+use crate::game_manager;
 
-///Get the CommandData for this command.
-pub fn get_command_data() -> CommandData {
-    CommandData{ //Create new command data.
-        identifiers: vec![ //populate the identifiers with string literals. These will be what is used to match player input this command.
+/// Immediately exits the application.
+pub struct CommandExit;
+
+impl Command for CommandExit {
+    fn get_identifiers(&self) -> Vec<String> {
+        vec![ //populate the identifiers with string literals. These will be what is used to match player input this command.
             "exit".to_string(),
             "EXIT".to_string(),
             "Exit".to_string(),
@@ -15,11 +17,9 @@ pub fn get_command_data() -> CommandData {
             "Q".to_string(),
             "e".to_string(),
             "E".to_string()
-        ],
+        ]
     }
-}
-
-///Run the logic of this command
-pub fn call_command(params: String, managers: &Managers) {
-    std::process::exit(0); //Exit the game
+    fn call_command(&self, _params: &String) {
+        game_manager::quit_game();
+    }
 }
