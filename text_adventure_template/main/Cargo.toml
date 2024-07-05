@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 items = {path = "../items"}
 scene_util = {path = "../scene_util"}
+save_system = {path = "../save_system"}
 
 
 scene_1 = {path = "../scenes/scene_1"}

@@ -3,6 +3,7 @@ use game_manager::get_game_manager;
 use item_manager::get_item_manager;
 use scene_manager::get_scene_manager;
 use items::item_manager;
+use save_system::{self, get_save_system};
 
 mod game_manager;
 mod command_manager;
@@ -31,4 +32,5 @@ fn load_start() {
     get_game_manager();
     get_item_manager();
     get_scene_manager();
+    get_save_system();
 }
