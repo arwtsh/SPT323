@@ -30,4 +30,24 @@ impl Scenes {
             Scenes::Scene10 => "Scene10"
         }
     }
+
+    /// Get the name of the library crate that houses this scene.
+    /// This is used for the dynamic library loading.
+    /// If something is misspelled in here, the library will not load and the game will crash.
+    /// This should match the name field inside the library's toml.
+    pub fn get_lib(&self) -> &str {
+        match *self {
+            Scenes::None => "",
+            Scenes::Scene1 => "scene_1",
+            Scenes::Scene2 => "scene_2",
+            Scenes::Scene3 => "scene_3",
+            Scenes::Scene4 => "scene_4",
+            Scenes::Scene5 => "scene_5",
+            Scenes::Scene6 => "scene_6",
+            Scenes::Scene7 => "scene_7",
+            Scenes::Scene8 => "scene_8",
+            Scenes::Scene9 => "scene_9",
+            Scenes::Scene10 => "scene_10"
+        }
+    }
 }

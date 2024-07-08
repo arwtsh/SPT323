@@ -1,7 +1,8 @@
 use scene_util::scene_id;
-use scene_util::scene_template::SceneData;
+use scene_util::scene_template::{SceneData, Scene};
 
-///Get the Scene_Data for this scene.
+/// Get the Scene_Data for this scene.
+#[no_mangle]
 pub fn get_scene_data() -> SceneData {
     SceneData{ //Create new scene.
         identifiers: vec![ //populate the identifiers with string literals. These will be what is used to match player input this scene.
@@ -19,3 +20,14 @@ pub fn get_scene_data() -> SceneData {
     }
 }
 
+/// Get the scene for this library.
+#[no_mangle]
+pub fn get_scene() -> Box<dyn Scene> {
+    Box::new(Scene1)
+}
+
+pub struct Scene1;
+
+impl Scene for Scene1 {
+
+}

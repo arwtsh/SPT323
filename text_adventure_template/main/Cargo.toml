@@ -7,6 +7,7 @@ edition = "2021"
 items = {path = "../items"}
 scene_util = {path = "../scene_util"}
 save_system = {path = "../save_system"}
+libloading = "0.8"
 
 
 scene_1 = {path = "../scenes/scene_1"}

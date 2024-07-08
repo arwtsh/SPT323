@@ -8,6 +8,7 @@ use save_system::{self, get_save_system};
 mod game_manager;
 mod command_manager;
 mod scene_manager;
+mod scene_loader;
 
 //
 // ADD TO THE MODS BELOW WHEN ADDING NEW COMMANDS
