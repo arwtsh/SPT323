@@ -8,15 +8,4 @@ items = {path = "../items"}
 scene_util = {path = "../scene_util"}
 save_system = {path = "../save_system"}
 libloading = "0.8"
-
-
-scene_1 = {path = "../scenes/scene_1"}
-scene_2 = {path = "../scenes/scene_2"}
-scene_3 = {path = "../scenes/scene_3"}
-scene_4 = {path = "../scenes/scene_4"}
-scene_5 = {path = "../scenes/scene_5"}
-scene_6 = {path = "../scenes/scene_6"}
-scene_7 = {path = "../scenes/scene_7"}
-scene_8 = {path = "../scenes/scene_8"}
-scene_9 = {path = "../scenes/scene_9"}
-scene_10 = {path = "../scenes/scene_10"}
+event_system = {path = "../event_system"}
