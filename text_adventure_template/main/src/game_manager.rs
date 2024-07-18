@@ -1,5 +1,8 @@
+use event_system::{get_event_system, EventSystem};
+use event_system::events::EventType::OnGameStart;
+use event_system::events_generated::EventDelegate::{OnApplicationShutdown, QuitApplication};
+
 use crate::command_manager::parse_user_input;
-use crate::scene_manager;
 
 /// The singleton of the GameManager
 static mut INSTANCE: Option<GameManager> = Option::None;
@@ -41,7 +44,7 @@ impl GameManager {
     /// Create a new GameManager
     pub fn init() -> GameManager{
         GameManager {
-            is_game_active: true
+            is_game_active: false
         }
     }
 }
@@ -50,7 +53,8 @@ impl GameManager {
 pub fn start_game() {
     get_mut_game_manager().is_game_active = true;
 
-    //Start the game loop
+    get_event_system().invoke(OnGameStart);
+
     game_loop();
 }
 
@@ -65,43 +69,25 @@ fn game_loop() {
         std::io::stdin().read_line(&mut user_input).expect("Failed to read user input."); //Read user input from terminal.
         parse_user_input(&user_input.trim().to_string()); //Interpret the player input.
     }
+}
 
-    //Do code logic that occurs when the game is exiting.
-    end_loop();
+/// Code that is ran when the game shuts down
+/// This code does not run if std::process::exit(0); is called directly.
+fn on_game_shutdown() {
+    //Game should be automatically exiting normally
+    //We could call  to force the game to close, though.
+    print!("Thanks for playing!");
 }
 
 /// Tells the game loop to exit the game at the end of the next loop.
-/// If an immediate exit is desired, std::process::exit(0); should be used instead.
-pub fn quit_game() {
+/// If an immediate exit (crash) is desired, std::process::exit(0); should be used instead.
+fn quit_game() {
     //Tell the game manager the game is no longer active.
     get_mut_game_manager().is_game_active = false;
 }
 
-/// Code that executes when the game is attempting to quit
-fn end_loop() {
-    //Ask the user if they want to play again.
-    println!("Do you want to play again? (y/n)");
-
-    let mut user_input = String::new();
-    std::io::stdin().read_line(&mut user_input).expect("Failed to read user input."); //Read user input from terminal.
-    if ["y", "Y", "yes", "Yes", "YES"].contains(&user_input.trim()){
-        restart_game(); //Start the game over.
-    }
-    else {
-        game_shutdown();
-    }
-}
-
-/// Restarts the game
-fn restart_game() {
-    scene_manager::get_mut_scene_manager().reset(); //Move the player to the first location again.
-
-    start_game(); //Start the game loop again.
-}
-
-/// Code that is ran when the game shuts down
-fn game_shutdown() {
-    //Game should be automatically exiting normally
-    //We could call std::process::exit(0); to force the game to close, though.
-    print!("Thanks for playing!");
+pub fn setup_events(event_system: &mut EventSystem) {
+    //Have code execute when the application shuts down.
+    event_system.add_listener(OnApplicationShutdown(on_game_shutdown));
+    event_system.add_listener(QuitApplication(quit_game));
 }

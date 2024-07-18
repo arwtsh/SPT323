@@ -1,4 +1,5 @@
-use crate::scene_manager::get_mut_scene_manager;
+use event_system::get_event_system;
+use event_system::events::EventType::MoveRight;
 use crate::command_manager::Command;
 
 /// A way for the player to move locations.
@@ -16,6 +17,6 @@ impl Command for CommandRight {
         ]
     }
     fn call_command(&self, _params: &String) {
-        get_mut_scene_manager().move_right();
+        get_event_system().invoke(MoveRight);
     }
 }

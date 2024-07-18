@@ -1,7 +1,9 @@
 use std::collections::HashMap;
-use scene_util::scene_id::Scenes;
+use event_system::events_generated::EventDelegate::{OnGameStart, OnMoveScenesRequest};
+use event_system::EventSystem;
+use scene_util::{scene_id::SceneId, scene_template::Scene};
 use scene_util::scene_template::SceneData;
-use crate::game_manager;
+use crate::{main_menu::MainMenu, scene_loader::SceneLoader};
 
 /// The singleton of the SceneManager
 static mut INSTANCE: Option<SceneManager> = Option::None;
@@ -33,14 +35,18 @@ pub fn get_mut_scene_manager() -> &'static mut SceneManager {
 }
 
 pub struct SceneManager {
-    //Information about every scene. This does not change or unload during gameplay.
+    //Information about all dynamically loaded scenes. This does not change or unload during gameplay.
     //This is mainly used to access scenes.
     //It is in a HashMap, meaning you can access the SceneData with just the SceneId enum.
-    all_scene_data : HashMap<Scenes, SceneData>,
+    all_scene_data : HashMap<SceneId, SceneData>,
     //A map connecting strings to SceneIDs. This is used to parse user input.
-    scene_parses: HashMap<String, Scenes>,
+    scene_parses: HashMap<String, SceneId>,
     //The current scene the player is in.
-    current_scene: Scenes
+    current_scene: SceneId,
+    //The manager in charge of dynamically loading scenes.
+    scene_loader: SceneLoader,
+    //The main menu. This scene will always have an instance ready at all times.
+    main_menu: MainMenu
 }
 
 impl SceneManager {
@@ -48,12 +54,14 @@ impl SceneManager {
     pub fn init() -> SceneManager {
         //Declare a new instance of SceneManager
         let mut manager = SceneManager {
-            all_scene_data: find_scene_data(), //Find every SceneData and store it.
+            all_scene_data: HashMap::new(), //Find every SceneData and store it.
             scene_parses: HashMap::new(), //Initialize the scene_parse hash map.
-            current_scene: Scenes::Scene1 //Set Scene1 as the starting scene.
+            current_scene: SceneId::MainMenu, //The game will always initialize in the main menu.
+            scene_loader: SceneLoader::new(),
+            main_menu: MainMenu::new()
         };
+        manager.all_scene_data = find_scene_data(&mut manager.scene_loader);
         manager.compile_scene_parses(); //Populate the scene_parse hash map.
-        manager.move_scenes(manager.current_scene);
         manager //Return the new instance.
     }
 
@@ -75,18 +83,18 @@ impl SceneManager {
     }
 
     ///Parse a string to scene id
-    pub fn parse_scene(&self, input: String) -> Scenes{
+    pub fn parse_scene(&self, input: String) -> SceneId{
         //Get the result from the hash map. 
         //If the string does not exist in the map, it returns Option.none
         let result = self.scene_parses.get(&input); 
         if result.is_some() {
             *result.unwrap()
         } else {
-            Scenes::None
+            SceneId::None
         }
     }
 
-    fn get_scene_data(&self, scene: Scenes) -> &SceneData {
+    fn get_scene_data(&self, scene: SceneId) -> &SceneData {
         //Get the result from the hash map. 
         //If the enum does not exist in the map, then the program should panic.
         let result = self.all_scene_data.get(&scene); 
@@ -96,55 +104,53 @@ impl SceneManager {
             panic!("Scene {} does not have an entry in the all_scene_data hash map.", scene.to_string());
         }
     }
-
-    //The player moved to the right.
-    pub fn move_right(&mut self) {
-        //Get the current scene data
-        let current_scene_data = self.get_scene_data(self.current_scene);
-        self.move_scenes(current_scene_data.right_scene);
-    }
-
-     //The player moved to the left.
-    pub fn move_left(&mut self) {
-        //Get the current scene data
-        let current_scene_data = self.get_scene_data(self.current_scene);
-        self.move_scenes(current_scene_data.left_scene);
-    }
-
-    fn move_scenes(&mut self, move_to: Scenes) {
-        //Set new current scene
-        self.current_scene = move_to;
-        let new_scene_data = self.get_scene_data(self.current_scene);
-        println!("{}", new_scene_data.description);
-        if new_scene_data.left_scene == Scenes::None {
-            game_manager::quit_game();
-        }
-    }
-
-    /// Reset the current scenes to the beginning.
-    pub fn reset(&mut self) {
-        self.move_scenes(Scenes::Scene1);
-    }
 }
-
-//
-// MODIFY THE BELOW FUNCTIONS WHEN ADDING NEW SCENES
-//
 
 //Gets scene data of every scene and puts it in a hash map.
 //The hash map makes it easily accessible.
-fn find_scene_data() -> HashMap<Scenes, SceneData> {
+fn find_scene_data(scene_loader: &mut SceneLoader) -> HashMap<SceneId, SceneData> {
     let mut map = HashMap::new();
-    map.insert(Scenes::Scene1, scene_1::get_scene_data());
-    map.insert(Scenes::Scene2, scene_2::get_scene_data());
-    map.insert(Scenes::Scene3, scene_3::get_scene_data());
-    map.insert(Scenes::Scene4, scene_4::get_scene_data());
-    map.insert(Scenes::Scene5, scene_5::get_scene_data());
-    map.insert(Scenes::Scene6, scene_6::get_scene_data());
-    map.insert(Scenes::Scene7, scene_7::get_scene_data());
-    map.insert(Scenes::Scene8, scene_8::get_scene_data());
-    map.insert(Scenes::Scene9, scene_9::get_scene_data());
-    map.insert(Scenes::Scene10, scene_10::get_scene_data());
+    for scene_id in SceneId::iter() {
+        map.insert(*scene_id, scene_loader.get_scene_data(*scene_id));
+    }
     map
 }
 
+/// Moves what scene the application is using.
+fn move_scenes(move_to: SceneId) {
+    if move_to == SceneId::None {
+        print!("Cannot move to scene \"None\" because it represents no scene.");
+    }
+
+    let scene_manager = get_mut_scene_manager();
+
+    //Tell the current scene that it is exiting.
+    if scene_manager.current_scene == SceneId::MainMenu {
+        scene_manager.main_menu.exit_scene();
+    }
+    else {
+        scene_manager.scene_loader.get_scene(scene_manager.current_scene).exit_scene();
+    }
+
+
+    //The the new scene that it is entering
+    if move_to == SceneId::MainMenu {
+        scene_manager.main_menu.enter_scene();
+    }
+    else {
+        scene_manager.scene_loader.get_scene(move_to).enter_scene();
+    }
+
+    //Set new current scene
+    scene_manager.current_scene = move_to;
+}
+
+/// Add listeners to all the events the scene manager will use.
+pub fn setup_events(event_system: &mut EventSystem) {
+    //When the game starts, make the scene the main menu.
+    event_system.add_listener(OnGameStart(|| {
+        get_scene_manager().main_menu.enter_scene();
+    }));
+
+    event_system.add_listener(OnMoveScenesRequest(move_scenes));
+}

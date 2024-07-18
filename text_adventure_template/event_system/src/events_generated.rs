@@ -1,43 +1,41 @@
 use crate::events::EventType;
 
 pub enum EventDelegate {
-    StartGame(fn()),
-    EndGame(fn()),
+    OnMoveScenesRequest(fn(scene_util::scene_id::SceneId)),
     OnGameStart(fn()),
-    OnGameEnd(fn()),
-    MoveScenes(fn(bool))
+    MoveLeft(fn()),
+    MoveRight(fn()),
+    OnApplicationShutdown(fn()),
+    QuitApplication(fn())
 }
 
 pub struct AllEvents {
-    start_game: Vec<fn()>,
-    end_game: Vec<fn()>,
+    on_move_scenes_request: Vec<fn(scene_util::scene_id::SceneId)>,
     on_game_start: Vec<fn()>,
-    on_game_end: Vec<fn()>,
-    move_scenes: Vec<fn(bool)>
+    move_left: Vec<fn()>,
+    move_right: Vec<fn()>,
+    on_application_shutdown: Vec<fn()>,
+    quit_application: Vec<fn()>
 }
 
 impl AllEvents {
     pub fn new() -> Self {
         Self {
-            start_game: Vec::new(),
-            end_game: Vec::new(),
+            on_move_scenes_request: Vec::new(),
             on_game_start: Vec::new(),
-            on_game_end: Vec::new(),
-            move_scenes: Vec::new()
+            move_left: Vec::new(),
+            move_right: Vec::new(),
+            on_application_shutdown: Vec::new(),
+            quit_application: Vec::new()
         }
     }
 
     pub fn broadcast(&self, event: EventType)
     {
         match event {
-            EventType::StartGame => {
-                for func in self.start_game.iter() {
-                    func();
-                }
-            },
-            EventType::EndGame => {
-                for func in self.end_game.iter() {
-                    func();
+            EventType::OnMoveScenesRequest(param) => {
+                for func in self.on_move_scenes_request.iter() {
+                    func(param);
                 }
             },
             EventType::OnGameStart => {
@@ -45,14 +43,24 @@ impl AllEvents {
                     func();
                 }
             },
-            EventType::OnGameEnd => {
-                for func in self.on_game_start.iter() {
+            EventType::MoveLeft => {
+                for func in self.move_left.iter() {
                     func();
                 }
             },
-            EventType::MoveScenes(param) => {
-                for func in self.move_scenes.iter() {
-                    func(param);
+            EventType::MoveRight => {
+                for func in self.move_right.iter() {
+                    func();
+                }
+            },
+            EventType::OnApplicationShutdown => {
+                for func in self.on_application_shutdown.iter() {
+                    func();
+                }
+            },
+            EventType::QuitApplication => {
+                for func in self.quit_application.iter() {
+                    func();
                 }
             }
         }
@@ -60,11 +68,12 @@ impl AllEvents {
 
     pub fn bind(&mut self, event: EventDelegate) {
         match event {
-            EventDelegate::StartGame(func) => self.start_game.push(func),
-            EventDelegate::EndGame(func) => self.end_game.push(func),
+            EventDelegate::OnMoveScenesRequest(func) => self.on_move_scenes_request.push(func),
             EventDelegate::OnGameStart(func) => self.on_game_start.push(func),
-            EventDelegate::OnGameEnd(func) => self.on_game_end.push(func),
-            EventDelegate::MoveScenes(func) => self.move_scenes.push(func),
+            EventDelegate::MoveLeft(func) => self.move_left.push(func),
+            EventDelegate::MoveRight(func) => self.move_right.push(func),
+            EventDelegate::OnApplicationShutdown(func) => self.on_application_shutdown.push(func),
+            EventDelegate::QuitApplication(func) => self.quit_application.push(func)
         }
     }
 }

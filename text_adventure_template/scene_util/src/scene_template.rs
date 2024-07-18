@@ -4,14 +4,15 @@ use crate::scene_id;
 /// It can be accessed even when the item isn't loaded.
 pub struct SceneData {
     pub identifiers: Vec<String>, //All strings that could be referencing this Scene.
-    pub id: scene_id::Scenes, //The Scene enum that is an ID for this scene.
-    pub left_scene: scene_id::Scenes, //The scene that the player goes to when moving left.
-    pub right_scene: scene_id::Scenes, //The scene that the player goes to when moving right.
-    pub description: String //What is printed to the screen when the player moves to this scene.
+    pub id: scene_id::SceneId, //The Scene enum that is an ID for this scene.
 }
 
 /// Declares this as a scene that can be loaded
 pub trait Scene {
     /// Invoked when this scene is unloaded from memory.
     fn unload(&self) {}
+    /// Invoked when the player exits this scene.
+    fn exit_scene(&self) {}
+    /// Invoked when the player enters this scene.
+    fn enter_scene(&self) {}
 }
