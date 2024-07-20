@@ -3,6 +3,7 @@ use scene_util::scene_template::{SceneData, Scene};
 use event_system::get_event_system;
 
 ///Get the Scene_Data for this scene.
+#[no_mangle]
 pub fn get_scene_data() -> SceneData {
     SceneData{
         identifiers: vec![ 
@@ -10,6 +11,12 @@ pub fn get_scene_data() -> SceneData {
             "scene2".to_string()],
         id: SceneId::Scene2
     }
+}
+
+/// Get the scene for this library.
+#[no_mangle]
+pub fn get_scene() -> Box<dyn Scene> {
+    Box::new(Scene2)
 }
 
 pub struct Scene2;

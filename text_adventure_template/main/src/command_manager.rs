@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use std::collections::HashSet;
+use command_schemes::CommandSchemes;
 
 //
 // ADD TO THE USES BELOW WHEN ADDING NEW COMMANDS
@@ -7,6 +9,10 @@ use crate::commands::command_exit;
 use crate::commands::command_help;
 use crate::commands::command_left;
 use crate::commands::command_right;
+use crate::commands::command_credits;
+use crate::commands::command_play;
+use crate::commands::command_profile;
+use crate::commands::command_schemes;
 
 //
 // ADD TO THE ENUM BELOW WHEN ADDING NEW COMMANDS
@@ -18,7 +24,10 @@ pub enum CommandId {
     Exit,
     Help,
     Left,
-    Right
+    Right,
+    Play,
+    Credits,
+    Profile
 }
 
 impl CommandId {
@@ -28,7 +37,10 @@ impl CommandId {
             CommandId::Exit => "Exit",
             CommandId::Help => "Help",
             CommandId::Left => "Left",
-            CommandId::Right => "Right"
+            CommandId::Right => "Right",
+            CommandId::Credits => "Credits",
+            CommandId::Play => "Play",
+            CommandId::Profile => "Profile"
         }
     }
 }
@@ -77,7 +89,10 @@ pub struct CommandManager {
     //A hash map for every command. This is the first container that is populated.
     all_commands : HashMap<CommandId, Box<dyn Command>>,
     //Dictionary for storing all player input parses.
-    command_identifiers : HashMap<String, CommandId>
+    command_identifiers : HashMap<String, CommandId>,
+    //A scheme is all the commands that the player is allowed to use
+    //This represents different parts of the game.
+    pub active_commands_scheme: CommandSchemes
 }
 
 impl CommandManager {
@@ -85,8 +100,14 @@ impl CommandManager {
         //Declare a new instance of CommandManager
         CommandManager {
             all_commands: find_commands(), //Find every command and store it.
-            command_identifiers: compile_command_parses(&find_commands()) //Initialize the command hash map.
+            command_identifiers: compile_command_parses(&find_commands()), //Initialize the command hash map.
+            active_commands_scheme: CommandSchemes::MainMenu //Start in the main menu
         }
+    }
+
+    /// Determine if the command is one of the allowed commands the player can use at this time.
+    fn can_player_use_command(&self, command: &CommandId) -> bool {
+        self.active_commands_scheme.is_command_member(command)
     }
 
     /// Convert a string to CommandId
@@ -155,7 +176,7 @@ pub fn parse_user_input(input: &String) {
 fn interpret_command(command: &String, params: &String) {
     let command_manager = get_command_manager();
     let command_id: CommandId= command_manager.parse_command(&command); //Convert the string to enum
-    if command_id == CommandId::None { //Make sure the command the user typed exhists.
+    if command_id == CommandId::None && command_manager.can_player_use_command(&command_id) { //Make sure the command the user typed exists and is allowed.
         println!("Command {} does not match any commands. Use \"help\" to list all the different commands.", command);
     }
     else {
@@ -177,5 +198,8 @@ fn find_commands() -> HashMap<CommandId, Box<dyn Command>> {
     map.insert(CommandId::Help, Box::new(command_help::CommandHelp));
     map.insert(CommandId::Left, Box::new(command_left::CommandLeft));
     map.insert(CommandId::Right, Box::new(command_right::CommandRight));
+    map.insert(CommandId::Play, Box::new(command_play::CommandPlay));
+    map.insert(CommandId::Credits, Box::new(command_credits::CommandCredits));
+    map.insert(CommandId::Profile, Box::new(command_profile::CommandProfile));
     map 
 }

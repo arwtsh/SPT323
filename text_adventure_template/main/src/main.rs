@@ -18,10 +18,14 @@ mod main_menu;
 // ADD TO THE MODS BELOW WHEN ADDING NEW COMMANDS
 //
 pub mod commands {
+    pub mod command_schemes;
     pub mod command_exit;
     pub mod command_help;
     pub mod command_left;
     pub mod command_right;
+    pub mod command_credits;
+    pub mod command_play;
+    pub mod command_profile;
 }
 
 fn main() {

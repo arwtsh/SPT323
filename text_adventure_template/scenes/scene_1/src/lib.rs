@@ -28,5 +28,7 @@ impl Scene for Scene1 {
         The forest is notorious for disappearances. It's easy to get lost in it's vast labyranth. 
         Entering the forest, the path immediatly branches.");
         println!("To the LEFT is the sound of bubbling water. To the RIGHT you can barely make out small points of light.");
+
+        //get_mut_command_manager().active_commands_scheme = CommandSchemes::Gameplay;
     }
 }

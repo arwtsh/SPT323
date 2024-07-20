@@ -1,4 +1,4 @@
-use crate::command_manager::Command;
+use crate::command_manager::{get_command_manager, Command};
 
 /// Displays information about how to play this game.
 pub struct CommandHelp;
@@ -15,9 +15,7 @@ impl Command for CommandHelp {
     }
     fn call_command(&self, _params: &String) {
         //Display to the terminal how to play the game and the commands to use.
-        println!("You will be given a text description of a scene.");
-        println!("You will chose to go either RIGHT or LEFT.");
-        println!("HELP repeats these tips.");
-        println!("Help closes the game.");
+        //This will change based on the current command scheme.
+        println!("{}", get_command_manager().active_commands_scheme.get_scheme_help_text());
     }
 }

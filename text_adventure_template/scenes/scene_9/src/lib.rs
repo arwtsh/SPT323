@@ -3,6 +3,7 @@ use scene_util::scene_template::{SceneData, Scene};
 use event_system::get_event_system;
 
 ///Get the Scene_Data for this scene.
+#[no_mangle]
 pub fn get_scene_data() -> SceneData {
     SceneData{ //Create new scene.
         identifiers: vec![ //populate the identifiers with string literals. These will be what is used to match player input this scene.
@@ -11,6 +12,12 @@ pub fn get_scene_data() -> SceneData {
         ],
         id: SceneId::Scene9
     }
+}
+
+/// Get the scene for this library.
+#[no_mangle]
+pub fn get_scene() -> Box<dyn Scene> {
+    Box::new(Scene9)
 }
 
 pub struct Scene9;

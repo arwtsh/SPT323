@@ -1,24 +1,22 @@
 use event_system::get_event_system;
-use event_system::events::EventType::MoveLeft;
-
+use event_system::events::EventType::MoveRight;
 use crate::command_manager::Command;
 
 /// A way for the player to move locations.
-/// Moves the player to the scene marked "left"
-pub struct CommandLeft;
+/// Moves the player to the scene marked "right"
+pub struct CommandProfile;
 
-impl Command for CommandLeft {
+impl Command for CommandProfile {
     fn get_identifiers(&self) -> Vec<String> {
         vec![ //populate the identifiers with string literals. These will be what is used to match player input this command.
-            "left".to_string(),
-            "LEFT".to_string(),
-            "Left".to_string(),
-            "l".to_string(),
-            "L".to_string()
+            "right".to_string(),
+            "RIGHT".to_string(),
+            "Right".to_string(),
+            "r".to_string(),
+            "R".to_string()
         ]
     }
-
     fn call_command(&self, _params: &String) {
-        get_event_system().invoke(MoveLeft);
+        get_event_system().invoke(MoveRight);
     }
 }

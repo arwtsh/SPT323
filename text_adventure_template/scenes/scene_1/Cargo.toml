@@ -10,3 +10,5 @@ crate-type = ["dylib"]
 scene_util = {path = "../../scene_util"}
 save_system = {path = "../../save_system"}
 event_system = {path = "../../event_system"}
+
+main = {path = "../../main"}

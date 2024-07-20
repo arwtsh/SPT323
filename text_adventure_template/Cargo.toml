@@ -1,0 +1,15 @@
+[workspace]
+
+members = [
+    "scenes/scene_1",
+    "scenes/scene_2",
+    "scenes/scene_3",
+    "scenes/scene_4",
+    "scenes/scene_5",
+    "scenes/scene_6",
+    "scenes/scene_7",
+    "scenes/scene_8",
+    "scenes/scene_9",
+    "scenes/scene_10",
+    "main",
+]
