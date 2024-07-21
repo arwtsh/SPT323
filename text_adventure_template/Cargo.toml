@@ -1,6 +1,8 @@
 [workspace]
 
 members = [
+    "main",
+    "assets",
     "scenes/scene_1",
     "scenes/scene_2",
     "scenes/scene_3",
@@ -11,5 +13,4 @@ members = [
     "scenes/scene_8",
     "scenes/scene_9",
     "scenes/scene_10",
-    "main",
 ]

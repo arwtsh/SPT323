@@ -1,6 +1,5 @@
-use scene_util::scene_id::SceneId;
-use scene_util::scene_template::{SceneData, Scene};
-use event_system::get_event_system;
+use assets::scene_system::scene_id::SceneId;
+use assets::scene_system::scene_template::{SceneData, Scene};
 
 ///Get the Scene_Data for this scene.
 #[no_mangle]

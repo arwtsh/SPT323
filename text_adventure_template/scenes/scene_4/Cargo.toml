@@ -7,6 +7,4 @@ edition = "2021"
 crate-type = ["dylib"]
 
 [dependencies]
-scene_util = {path = "../../scene_util"}
-save_system = {path = "../../save_system"}
-event_system = {path = "../../event_system"}
+assets = {path = "../../assets"}

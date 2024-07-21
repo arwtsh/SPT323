@@ -3,21 +3,19 @@
 version = 3
 
 [[package]]
+name = "assets"
+version = "0.1.0"
+dependencies = [
+ "libloading",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
-
-[[package]]
-name = "event_system"
-version = "0.1.0"
-dependencies = [
- "scene_util",
-]
-
-[[package]]
-name = "items"
-version = "0.1.0"
 
 [[package]]
 name = "itoa"
@@ -39,11 +37,7 @@ dependencies = [
 name = "main"
 version = "0.1.0"
 dependencies = [
- "event_system",
- "items",
- "libloading",
- "save_system",
- "scene_util",
+ "assets",
 ]
 
 [[package]]
@@ -71,107 +65,74 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f3cb5ba0dc43242ce17de99c180e96db90b235b8a9fdc9543c96d2209116bd9f"
 
 [[package]]
-name = "save_system"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "scene_1"
 version = "0.1.0"
 dependencies = [
- "event_system",
- "main",
- "save_system",
- "scene_util",
+ "assets",
 ]
 
 [[package]]
 name = "scene_10"
 version = "0.1.0"
 dependencies = [
- "event_system",
- "save_system",
- "scene_util",
+ "assets",
 ]
 
 [[package]]
 name = "scene_2"
 version = "0.1.0"
 dependencies = [
- "event_system",
- "save_system",
- "scene_util",
+ "assets",
 ]
 
 [[package]]
 name = "scene_3"
 version = "0.1.0"
 dependencies = [
- "event_system",
- "save_system",
- "scene_util",
+ "assets",
 ]
 
 [[package]]
 name = "scene_4"
 version = "0.1.0"
 dependencies = [
- "event_system",
- "save_system",
- "scene_util",
+ "assets",
 ]
 
 [[package]]
 name = "scene_5"
 version = "0.1.0"
 dependencies = [
- "event_system",
- "save_system",
- "scene_util",
+ "assets",
 ]
 
 [[package]]
 name = "scene_6"
 version = "0.1.0"
 dependencies = [
- "event_system",
- "save_system",
- "scene_util",
+ "assets",
 ]
 
 [[package]]
 name = "scene_7"
 version = "0.1.0"
 dependencies = [
- "event_system",
- "save_system",
- "scene_util",
+ "assets",
 ]
 
 [[package]]
 name = "scene_8"
 version = "0.1.0"
 dependencies = [
- "event_system",
- "save_system",
- "scene_util",
+ "assets",
 ]
 
 [[package]]
 name = "scene_9"
 version = "0.1.0"
 dependencies = [
- "event_system",
- "save_system",
- "scene_util",
+ "assets",
 ]
-
-[[package]]
-name = "scene_util"
-version = "0.1.0"
 
 [[package]]
 name = "serde"
