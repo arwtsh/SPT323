@@ -22,6 +22,7 @@ pub mod scene_system {
 
 pub mod game_manager;
 pub mod save_system;
+pub mod user_input;
 
 use event_system::event_manager::{get_mut_event_system, get_event_system, EventSystem};
 use event_system::events::EventType::OnApplicationShutdown;

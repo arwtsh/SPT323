@@ -1,9 +1,13 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-const SETTINGS_PATH: &str = "saves/settings.save";
+use crate::user_input;
+
+const SETTINGS_PATH: &str = "saves/settings.set";
 const PROFILE_SAVE_LOCATION: &str = "saves/"; //Must end in a /
-const PROFILE_FILE_TYPE: &str = "save"; //Do not include the "."
+const PROFILE_FILE_TYPE: &str = "sav"; //Do not include the "."
+const PROFILE_ALLOWED_CHARS: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"; //All the allowed characters that can be inputted for the profile name.
+const PROFILE_MAX_LENGTH: u8 = 16; //The maximum length of the profile's name. This does not include the file type.
 
 /// The save data that represents the settings. 
 /// Settings are independ of player profile.
@@ -161,12 +165,18 @@ impl SaveSystem {
         self.save_data.world_data.flags.insert(name, flag); //Insert will create or update a key-value pair.
     }
 
+    /// Checks if the current profile has a file saved on the local machine.
+    /// This is a good way to check for new installs or file corruption.
+    pub fn does_current_profile_exist(&self) -> bool {
+        std::path::Path::new(&make_profile_path(&self.settings.current_profile)).exists()
+    }
+
     //To-do: Add getters for the variables in settings.
 }
 
 /// Load the SaveData from a path on the computer.
 /// If the save profile doesn't exist, it creates a default save in memory.
-/// If the save profile exists but was edited/corrupted in a way it can't load to the program will crash.
+/// If the save profile exists but was edited/corrupted in a way it can't load the program will crash.
 fn load_save_data(path: &String) -> SaveData {
     //Check if the save data exists.
     //If it doesn't then the profile doesn't exist yet, so we return an empty save data.
@@ -229,4 +239,41 @@ fn write_settings_data(path: &String, settigns: &SettingsData) {
     let json_data = serde_json::to_string(&settigns).expect("Unable to serialize save data to JSON.");
 
     save_file(path, &json_data);
+}
+
+/// Get a list of all available profiles.
+/// This is done by reading the filenames in the save directory.
+pub fn get_all_profiles() -> Vec<String> {
+    let mut profiles: Vec<String> = Vec::new();
+    let files = glob::glob(&(PROFILE_SAVE_LOCATION.to_string() +  "/*." + PROFILE_FILE_TYPE)).unwrap().filter_map(Result::ok); //Get all files where the filename matches the expected save file naming system.
+    for file in files {
+        //if file.file_name()
+        profiles.push(file.file_name().unwrap().to_str().unwrap().to_string());
+    }
+    profiles
+}
+
+pub fn create_new_profile() {
+    println!("New profile name:");
+    let mut is_valid_name: bool = true;
+    let mut profile_name: String = String::new();
+    //Loop so that in case of an error, the player can try again.
+    while is_valid_name {
+        //Get the profile name from user input.
+        profile_name =  user_input::get_user_input();
+
+        //Make sure the profile is in the correct format.
+        let chars = profile_name.chars();
+        if chars.count() == 0 {
+            is_valid_name = false;
+        }
+        if chars.count() > PROFILE_MAX_LENGTH.into() {
+            println!("The profile name is too long ");
+            is_valid_name = false;
+        }
+        for char in chars {
+
+        }
+
+    }
 }

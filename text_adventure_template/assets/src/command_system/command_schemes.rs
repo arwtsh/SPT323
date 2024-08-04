@@ -10,7 +10,7 @@ pub enum CommandSchemes {
 
 impl CommandSchemes {
     pub fn is_command_member(&self, command: &CommandId) -> bool {
-        self.get_scheme_commands().get(&command).is_some()
+        *command != CommandId::None && self.get_scheme_commands().get(&command).is_some()
     }
 
     fn get_scheme_commands(&self) -> HashSet<CommandId> {
@@ -20,7 +20,8 @@ impl CommandSchemes {
                     CommandId::Exit,
                     CommandId::Play,
                     CommandId::Credits,
-                    CommandId::Profile
+                    CommandId::Profile,
+                    CommandId::Help
                 ])
             },
             CommandSchemes::Gameplay => {

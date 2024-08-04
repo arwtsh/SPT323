@@ -125,7 +125,7 @@ pub fn parse_user_input(input: &String) {
 fn interpret_command(command: &String, params: &String) {
     let command_manager = get_command_manager();
     let command_id: CommandId= command_manager.parse_command(&command); //Convert the string to enum
-    if command_id == CommandId::None && command_manager.can_player_use_command(&command_id) { //Make sure the command the user typed exists and is allowed.
+    if !command_manager.can_player_use_command(&command_id) { //Make sure the command the user typed exists and is allowed.
         println!("Command {} does not match any commands. Use \"help\" to list all the different commands.", command);
     }
     else {

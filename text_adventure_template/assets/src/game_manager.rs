@@ -3,6 +3,7 @@ use crate::event_system::events::EventType::OnGameStart;
 use crate::event_system::generated::EventDelegate::{OnApplicationShutdown, QuitApplication};
 
 use crate::command_system::command_manager::parse_user_input;
+use crate::user_input;
 
 /// The singleton of the GameManager
 static mut INSTANCE: Option<GameManager> = Option::None;
@@ -60,14 +61,9 @@ pub fn start_game() {
 
 /// The main game loop.
 fn game_loop() {
-    //Declare input buffer
-    let mut user_input = String::new();
-
     //Loop while the game is active.
     while get_game_manager().is_game_active {
-        user_input.clear(); //Clear previous user input.
-        std::io::stdin().read_line(&mut user_input).expect("Failed to read user input."); //Read user input from terminal.
-        parse_user_input(&user_input.trim().to_string()); //Interpret the player input.
+        parse_user_input(&user_input::get_user_input().trim().to_string()); //Interpret the player input.
     }
 }
 
