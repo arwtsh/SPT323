@@ -1,34 +1,40 @@
-use command_manager::get_command_manager;
-use game_manager::get_game_manager;
-use item_manager::get_item_manager;
-use scene_manager::get_scene_manager;
-use items::item_manager;
+use assets;
 
-mod game_manager;
-mod command_manager;
-mod scene_manager;
-
-//
-// ADD TO THE MODS BELOW WHEN ADDING NEW COMMANDS
-//
-pub mod commands {
-    pub mod command_exit;
-    pub mod command_help;
-    pub mod command_left;
-    pub mod command_right;
-}
+use log::info;
+use log::LevelFilter;
+use log4rs::append::file::FileAppender;
+use log4rs::encode::pattern::PatternEncoder;
+use log4rs::config::{Appender, Config, Root};
 
 fn main() {
-    load_start();
-    game_manager::start_game();
+    //Set up logging in the app
+    setup_logging();
+
+    info!("Starting application...");
+
+    assets::init_app();
 }
 
-/// Load all the necessary items into memory at the start of the application.
-fn load_start() {
-    //Call each of the managers once so that they generate at the start of the application. 
-    //This isn't necessary entirely necessary, since they will automatically load the first time their needed, but it makes sence happenng here.
-    get_command_manager();
-    get_game_manager();
-    get_item_manager();
-    get_scene_manager();
+fn setup_logging() {
+    const OUTPUT_PATH: &str = "log/output.log";
+    const OLD_OUTPUT_PATH: &str = "log/old_output.log";
+
+    //Delete the second to last session's output log.
+    let _deletion = std::fs::remove_file(OLD_OUTPUT_PATH);
+
+    //Rename last session's output if it still exists.
+    let _rename = std::fs::rename(OUTPUT_PATH, OLD_OUTPUT_PATH);
+    
+    //Initialize log4rs
+    let logfile = FileAppender::builder()
+        .encoder(Box::new(PatternEncoder::new("{d(%Y-%m-%d %H:%M:%S)} {l} {M} - {m}{n}")))
+        .build(OUTPUT_PATH)
+        .unwrap();
+    let config = Config::builder()
+        .appender(Appender::builder().build("logfile", Box::new(logfile)))
+        .build(Root::builder()
+            .appender("logfile")
+            .build(LevelFilter::Info))
+    .unwrap();
+    log4rs::init_config(config).expect("Failed to set up logger.");
 }

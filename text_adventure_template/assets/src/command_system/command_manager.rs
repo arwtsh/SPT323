@@ -1,47 +1,8 @@
 use std::collections::HashMap;
+use command_schemes::CommandSchemes;
+use crate::command_system::command_schemes;
 
-//
-// ADD TO THE USES BELOW WHEN ADDING NEW COMMANDS
-//
-use crate::commands::command_exit;
-use crate::commands::command_help;
-use crate::commands::command_left;
-use crate::commands::command_right;
-
-//
-// ADD TO THE ENUM BELOW WHEN ADDING NEW COMMANDS
-//
-///An ID for commands
-#[derive(PartialEq, Eq, Hash, Clone, Copy)]
-pub enum CommandId {
-    None,
-    Exit,
-    Help,
-    Left,
-    Right
-}
-
-impl CommandId {
-    pub fn to_string(&self) -> &str {
-        match *self {
-            CommandId::None => "None",
-            CommandId::Exit => "Exit",
-            CommandId::Help => "Help",
-            CommandId::Left => "Left",
-            CommandId::Right => "Right"
-        }
-    }
-}
-
-///Declares this as a command the player can call.
-pub trait Command { //A trait makes a struct act more like a class with OOP.
-    ///Get the string identities of this command.
-    ///These will be used to match player text imput to a specific command.
-    fn get_identifiers(&self) -> Vec<String>;
-
-    ///Call the logic of this command.
-    fn call_command(&self, params: &String);
-}
+use crate::command_system::commands::{CommandId, Command};
 
 /// The singleton of the CommandManager
 static mut INSTANCE: Option<CommandManager> = Option::None;
@@ -77,7 +38,10 @@ pub struct CommandManager {
     //A hash map for every command. This is the first container that is populated.
     all_commands : HashMap<CommandId, Box<dyn Command>>,
     //Dictionary for storing all player input parses.
-    command_identifiers : HashMap<String, CommandId>
+    command_identifiers : HashMap<String, CommandId>,
+    //A scheme is all the commands that the player is allowed to use
+    //This represents different parts of the game.
+    pub active_commands_scheme: CommandSchemes
 }
 
 impl CommandManager {
@@ -85,8 +49,14 @@ impl CommandManager {
         //Declare a new instance of CommandManager
         CommandManager {
             all_commands: find_commands(), //Find every command and store it.
-            command_identifiers: compile_command_parses(&find_commands()) //Initialize the command hash map.
+            command_identifiers: compile_command_parses(&find_commands()), //Initialize the command hash map.
+            active_commands_scheme: CommandSchemes::MainMenu //Start in the main menu
         }
+    }
+
+    /// Determine if the command is one of the allowed commands the player can use at this time.
+    fn can_player_use_command(&self, command: &CommandId) -> bool {
+        self.active_commands_scheme.is_command_member(command)
     }
 
     /// Convert a string to CommandId
@@ -155,7 +125,7 @@ pub fn parse_user_input(input: &String) {
 fn interpret_command(command: &String, params: &String) {
     let command_manager = get_command_manager();
     let command_id: CommandId= command_manager.parse_command(&command); //Convert the string to enum
-    if command_id == CommandId::None { //Make sure the command the user typed exhists.
+    if !command_manager.can_player_use_command(&command_id) { //Make sure the command the user typed exists and is allowed.
         println!("Command {} does not match any commands. Use \"help\" to list all the different commands.", command);
     }
     else {
@@ -165,17 +135,12 @@ fn interpret_command(command: &String, params: &String) {
     }
 }
 
-//
-// MODIFY THE BELOW FUNCTIONS WHEN ADDING NEW COMMANDS
-//
-
-//Gets command data of every command and puts it in a hash map.
-//The hash map makes it easily accessible and iterable.
+/// Gets command data of every command and puts it in a hash map.
+/// The hash map makes it easily accessible and iterable.
 fn find_commands() -> HashMap<CommandId, Box<dyn Command>> {
     let mut map: HashMap<CommandId, Box<dyn Command>>  = HashMap::new();
-    map.insert(CommandId::Exit, Box::new(command_exit::CommandExit));
-    map.insert(CommandId::Help, Box::new(command_help::CommandHelp));
-    map.insert(CommandId::Left, Box::new(command_left::CommandLeft));
-    map.insert(CommandId::Right, Box::new(command_right::CommandRight));
-    map 
+    for command_id in CommandId::iter() {
+        map.insert(*command_id, command_id.get_command());
+    }
+    map
 }

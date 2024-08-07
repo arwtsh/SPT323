@@ -1,5 +1,4 @@
-use crate::command_manager::Command;
-use crate::game_manager;
+use crate::{command_system::commands::Command, event_system::{event_manager::get_event_system, events::EventType}};
 
 /// Immediately exits the application.
 pub struct CommandExit;
@@ -20,6 +19,6 @@ impl Command for CommandExit {
         ]
     }
     fn call_command(&self, _params: &String) {
-        game_manager::quit_game();
+        get_event_system().invoke(EventType::QuitApplication);
     }
 }

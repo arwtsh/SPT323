@@ -1,5 +1,7 @@
-use crate::scene_manager::get_mut_scene_manager;
-use crate::command_manager::Command;
+use crate::event_system::event_manager::get_event_system;
+use crate::event_system::events::EventType::MoveLeft;
+
+use crate::command_system::commands::Command;
 
 /// A way for the player to move locations.
 /// Moves the player to the scene marked "left"
@@ -15,7 +17,8 @@ impl Command for CommandLeft {
             "L".to_string()
         ]
     }
+
     fn call_command(&self, _params: &String) {
-        get_mut_scene_manager().move_left();
+        get_event_system().invoke(MoveLeft);
     }
 }
