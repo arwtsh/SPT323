@@ -5,3 +5,5 @@ edition = "2021"
 
 [dependencies]
 assets = {path = "../assets"}
+log4rs = "1.3.0"
+log = "0.4.22"
