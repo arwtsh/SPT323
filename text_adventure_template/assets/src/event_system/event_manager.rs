@@ -1,3 +1,5 @@
+use log::trace;
+
 use crate::event_system::generated::{AllEvents, EventDelegate};
 use crate::event_system::events::EventType;
 
@@ -39,7 +41,7 @@ pub struct EventSystem {
 
 impl EventSystem {
     pub fn new() -> Self {
-        println!("Created new event system");
+        trace!("Initialized event system");
         Self {
             subscribed_events: AllEvents::new()
         }

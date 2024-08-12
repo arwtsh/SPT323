@@ -17,11 +17,13 @@ pub mod scene_system {
     pub mod scene_template;
     pub mod static_scenes {
         pub mod main_menu;
+        pub mod profile_select;
     }
 }
 
-pub mod game_manager;
 pub mod save_system;
+
+pub mod game_manager;
 pub mod user_input;
 
 use event_system::event_manager::{get_mut_event_system, get_event_system, EventSystem};
@@ -29,7 +31,7 @@ use event_system::events::EventType::OnApplicationShutdown;
 use command_system::command_manager::get_command_manager;
 use game_manager::get_game_manager;
 use scene_system::scene_manager::get_scene_manager;
-use save_system::get_save_system;
+use save_system::save_system::get_save_system;
 
 /// Initialize the game.
 pub fn init_app() {

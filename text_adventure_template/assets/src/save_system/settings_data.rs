@@ -37,8 +37,8 @@ impl SaveSystem {
 
     /// Sets the value of the current profile.
     /// This does not have any logic for changing the profile, it's just a setter.
-    pub fn set_current_profile(&mut self, new_profile_name: String) {
-        self.get_mut_settings().current_profile = Some(new_profile_name);
+    pub fn set_current_profile(&mut self, new_profile_name: &String) {
+        self.get_mut_settings().current_profile = Some(new_profile_name.clone());
         self.get_mut_settings_wrapper().has_changed = true;
     }
 }

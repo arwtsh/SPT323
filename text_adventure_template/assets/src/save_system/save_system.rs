@@ -39,7 +39,7 @@ pub struct SaveSystem {
 impl SaveSystem {
     pub fn init() -> Self{
         //Create the save directory just in case it doesn't exist
-        std::fs::create_dir_all(PROFILE_SAVE_LOCATION); 
+        let _ = std::fs::create_dir_all(PROFILE_SAVE_LOCATION); 
 
         //Load the settings
         let settings_data = load_settings_data();

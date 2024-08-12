@@ -1,5 +1,5 @@
 use log::{error, info, warn};
-use super::{file_io::{delete_file, does_file_exist, load_file, save_file}, profile_data::{ProfileData, DEFAULT_PROFILE, PROFILE_FILE_TYPE, PROFILE_MAX_LENGTH, PROFILE_SAVE_LOCATION}, save_system::SaveSystem};
+use super::{file_io::{delete_file, does_file_exist, load_file, save_file}, profile_data::{ProfileData, DEFAULT_PROFILE, PROFILE_FILE_TYPE, PROFILE_SAVE_LOCATION}, save_system::SaveSystem};
 
 /// A wrapper that stores a profile. 
 /// This is used to have data attached to the profile that isn't saved to disk.
@@ -13,14 +13,14 @@ pub(super) struct ProfileWrapper {
 
 impl SaveSystem {
     /// Get the profile data from the wrapper.
-    pub fn get_profile(&self) -> &ProfileData {
+    pub(super) fn get_profile(&self) -> &ProfileData {
         //Return the stored content or default.
         self.get_profile_wrapper().content.as_ref().unwrap_or(&DEFAULT_PROFILE)
     }
 
     /// Get mutable profile data from the wrapper.
     /// Calling this will get rid of default.
-    pub fn get_mut_profile(&mut self) -> &mut ProfileData {
+    pub(super) fn get_mut_profile(&mut self) -> &mut ProfileData {
         //Since this is getting a mut variable, it can't return a constant.
         //Mutables borrows normally mean something will change, so it wouldn't be default anymore anyway.
         //Return the stored content or default.
@@ -79,49 +79,26 @@ impl SaveSystem {
         
     }
 
-    /// Check if the provided string is a valid option for a save file name.
-    /// It is important this is sanitized since it could cause the program to try and save an illegal file, causing the program to crash.
-    pub fn is_valid_profile_name(profile_name: &String) -> (bool, String) {
-        let chars = profile_name.chars();
-        let chars_count = profile_name.chars().count();
+    pub fn delete_profile(&mut self, profile_to_delete: &String) {
+        //First, delete the file from the hard drive.
+        delete_profile_data(profile_to_delete);
 
-        //Profile name can't be empty.
-        if profile_name.is_empty() {
-            return (false, "Profile names must not be empty.".to_string());
+        info!("Deleted profile {}", profile_to_delete);
+
+        //Then, handle what happens if that was the current profile.
+        if self.get_current_profile().is_some_and(|name| name == profile_to_delete) {
+            //Force the profile and current profile setting to default.
+            self.get_mut_settings().current_profile = None;
+            self.reset_profile();
+
+            info!("Deleted profile was the current profile.");
         }
-
-        //Make sure the player can't put too long of a profile name into the file system.
-        if chars_count > PROFILE_MAX_LENGTH.into() {
-            return (false, "The profile name is too long.".to_string());
-        }
-
-        //Check each character to see if it's an allowed file system character.
-        for char in chars {
-            if !char.is_alphanumeric() {
-                return (false, "The profile name can only contain letters and numbers.".to_string());
-            }
-        }
-
-        (true, String::new())
-    }
-
-    /// Get a list of all available profiles.
-    /// This is done by reading the filenames in the save directory.
-    pub fn get_all_profiles() -> Vec<String> {
-        let mut profiles: Vec<String> = Vec::new();
-        //Get all files where the filename matches the expected save file naming system.
-        let files = glob::glob(&(PROFILE_SAVE_LOCATION.to_string() +  "/*." + PROFILE_FILE_TYPE)).unwrap().filter_map(Result::ok); 
-        for file in files {
-            //if file.file_name()
-            profiles.push(file.file_name().unwrap().to_str().unwrap().split_once('.').unwrap().0.to_string());
-        }
-        profiles
     }
 }
 
 /// Piece together the save file path from the profile name.
 /// This is essentially a macro which expands to {PROFILE_SAVE_LOCATION + profile name}.PROFILE_FILE_TYPE
-fn make_profile_path(profile_name: &String) -> String {
+pub(super) fn make_profile_path(profile_name: &String) -> String {
     PROFILE_SAVE_LOCATION.to_string() + profile_name + "." + PROFILE_FILE_TYPE
 }
 

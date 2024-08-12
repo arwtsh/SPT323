@@ -9,7 +9,6 @@ pub(super) const DEFAULT_PROFILE: ProfileData = ProfileData { //The default prof
     world_data: DEFAULT_PROFILE_WORLD,
     player_data: DEFAULT_PROFILE_PLAYER
 };
-pub(super) const DEFAULT_PROFILE_NAME: &str = "default"; //The default name for profiles.
 
 /// All the data saved to disk that represents a profile.
 #[derive(Deserialize, Serialize)]

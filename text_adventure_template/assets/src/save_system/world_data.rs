@@ -39,7 +39,7 @@ impl SaveSystem {
     pub fn set_flag(&mut self, name: String, flag: bool) {
         //Initialize the flags if it is completely empty.
         if self.get_profile().world_data.flags.is_none() {
-            &self.get_mut_profile().world_data.flags.insert(HashMap::new());
+            let _ = &self.get_mut_profile().world_data.flags.insert(HashMap::new());
         }
 
         //Get the flags, initialize it if it's default to Option::None, insert the new flag.

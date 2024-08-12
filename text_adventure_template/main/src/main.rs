@@ -34,7 +34,7 @@ fn setup_logging() {
         .appender(Appender::builder().build("logfile", Box::new(logfile)))
         .build(Root::builder()
             .appender("logfile")
-            .build(LevelFilter::Info))
+            .build(LevelFilter::Trace))
     .unwrap();
     log4rs::init_config(config).expect("Failed to set up logger.");
 }

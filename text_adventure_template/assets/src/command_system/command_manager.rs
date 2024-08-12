@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use command_schemes::CommandSchemes;
 use crate::command_system::command_schemes;
-
+use log::{error, info};
 use crate::command_system::commands::{CommandId, Command};
 
 /// The singleton of the CommandManager
@@ -38,7 +38,8 @@ pub struct CommandManager {
     //A hash map for every command. This is the first container that is populated.
     all_commands : HashMap<CommandId, Box<dyn Command>>,
     //Dictionary for storing all player input parses.
-    command_identifiers : HashMap<String, CommandId>,
+    //Each command scheme has it's own parse map.
+    command_identifiers : HashMap<CommandSchemes, HashMap<String, CommandId>>,
     //A scheme is all the commands that the player is allowed to use
     //This represents different parts of the game.
     pub active_commands_scheme: CommandSchemes
@@ -54,27 +55,25 @@ impl CommandManager {
         }
     }
 
-    /// Determine if the command is one of the allowed commands the player can use at this time.
-    fn can_player_use_command(&self, command: &CommandId) -> bool {
-        self.active_commands_scheme.is_command_member(command)
-    }
-
     /// Convert a string to CommandId
-    pub fn parse_command(&self, command: &String) -> CommandId{
+    pub fn parse_command(&self, command: &String) -> &CommandId{
         //Get the result from the hash map. 
         //If the string does not exist in the map, it returns Option.none
-        let result = self.command_identifiers.get(command); 
-        if result.is_some() {
-            *result.unwrap()
-        } else {
-            CommandId::None
+        match self.command_identifiers.get(&self.active_commands_scheme) {
+            Some(command_parses) => {
+                match command_parses.get(command) {
+                    Some(result) => result,
+                    None => &CommandId::None
+                }
+            },
+            None => &CommandId::None
         }
     }
 
     /// Get a Command by CommandId
     /// The command must have been connected in the find_commands function
-    pub fn get_command(&self, command_id: CommandId) -> &Box<dyn Command> {
-        if command_id != CommandId::None {
+    pub fn get_command(&self, command_id: &CommandId) -> &Box<dyn Command> {
+        if command_id != &CommandId::None {
             let command = self.all_commands.get(&command_id);
             if command.is_some() {
                 command.unwrap()
@@ -88,24 +87,16 @@ impl CommandManager {
 }
 
 /// Compiles a HashMap to have all string-id pairs from command data.
-fn compile_command_parses(all_commands: &HashMap<CommandId, Box<dyn Command>>) -> HashMap<String, CommandId>{
-    let mut command_identifiers : HashMap<String, CommandId> = HashMap::new();
-    
-    //Loop through every command data.
-    for command in all_commands.iter() {
-        //Loop through the collection of strings in a command.
-        for command_identifier in command.1.as_ref().get_identifiers() {
-            if command_identifiers.contains_key(&command_identifier) {
-                panic!("A command parse identifier \"{}\" in command {} already points to command {}", command_identifier, command.0.to_string(), command_identifiers.get(&command_identifier).unwrap().to_string());
-            }
-            else {
-                //Populate the scene_parse hash map from the data in scene data.
-                command_identifiers.insert(command_identifier.clone(), *command.0);
-            }
+fn compile_command_parses(all_commands: &HashMap<CommandId, Box<dyn Command>>) -> HashMap<CommandSchemes, HashMap<String, CommandId>>{
+    let mut result: HashMap<CommandSchemes, HashMap<String, CommandId>> = HashMap::new();
+    for scheme in CommandSchemes::iter() {
+        //Insert into the hashmap and catch any errors.
+        if result.insert(scheme.clone(), scheme.get_scheme_parses(all_commands)).is_some() {
+            error!("Command scheme {} found a duplicate of itself while compiling command parses.", scheme.to_string())
         }
     }
-
-    command_identifiers
+    
+    result
 }
 
 /// Parses user input into command format and calls the command.
@@ -124,13 +115,14 @@ pub fn parse_user_input(input: &String) {
 /// Interpret the split player input.
 fn interpret_command(command: &String, params: &String) {
     let command_manager = get_command_manager();
-    let command_id: CommandId= command_manager.parse_command(&command); //Convert the string to enum
-    if !command_manager.can_player_use_command(&command_id) { //Make sure the command the user typed exists and is allowed.
+    let command_id: &CommandId = command_manager.parse_command(&command); //Convert the string to enum
+    if command_id == &CommandId::None { //Make sure the command the user typed exists and is allowed.
         println!("Command {} does not match any commands. Use \"help\" to list all the different commands.", command);
     }
     else {
         //Call the appropriate command.
         let command: &Box<dyn Command> = command_manager.get_command(command_id);
+        info!("Calling command {}", command_id.to_string());
         command.as_ref().call_command(params);
     }
 }
