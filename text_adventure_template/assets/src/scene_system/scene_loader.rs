@@ -1,5 +1,5 @@
 use libloading::{Library, library_filename, Symbol};
-use crate::scene_system::{scene_id::SceneId, scene_template::{Scene, SceneData}};
+use crate::{event_system::event_manager::get_mut_event_system, scene_system::{scene_id::SceneId, scene_template::{Scene, SceneData}}};
 use std::collections::HashMap;
 
 
@@ -82,7 +82,7 @@ impl SceneLoader {
         //Removed the cached scene and call it's unload implementation
         let loaded_scene = self.loaded_scenes.remove(&scene);
         if loaded_scene.is_some() {
-            loaded_scene.unwrap().unload();
+            loaded_scene.unwrap().unload(get_mut_event_system());
         }
 
         //Remove the cached library and unload it from memory.

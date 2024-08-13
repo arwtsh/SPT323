@@ -1,8 +1,10 @@
 use crate::event_system::event_manager::{get_event_system, EventSystem};
-use crate::event_system::events::EventType::OnGameStart;
-use crate::event_system::generated::EventDelegate::{OnApplicationShutdown, QuitApplication};
-
+use crate::event_system::events::EventType::{OnGameStart, OnMoveScenesRequest};
+use crate::event_system::generated::EventDelegate::{OnApplicationShutdown, QuitApplication, WinGame, LoseGame};
+use crate::scene_system::scene_id::SceneId::MainMenu;
 use crate::command_system::command_manager::parse_user_input;
+use crate::save_system::save_system::get_mut_save_system;
+use crate::scene_system::scene_id::STARTING_SCENE;
 use crate::user_input;
 
 /// The singleton of the GameManager
@@ -82,8 +84,28 @@ fn quit_game() {
     get_mut_game_manager().is_game_active = false;
 }
 
+/// Logic that happens when the player wins the game.
+fn win_game() {
+    println!("You win!");
+    //Reset the profile so the player can play again.
+    get_mut_save_system().set_current_scene(STARTING_SCENE);
+    //Move the player to the main menu
+    get_event_system().invoke(OnMoveScenesRequest(MainMenu));
+}
+
+/// Logic that happens when the player wins the game.
+fn lose_game() {
+    println!("You lose, try again!");
+    //Reset the profile so the player can play again.
+    get_mut_save_system().set_current_scene(STARTING_SCENE);
+    //Move the player to the main menu
+    get_event_system().invoke(OnMoveScenesRequest(MainMenu));
+}
+
 pub fn setup_events(event_system: &mut EventSystem) {
     //Have code execute when the application shuts down.
     event_system.add_listener(OnApplicationShutdown(on_game_shutdown));
     event_system.add_listener(QuitApplication(quit_game));
+    event_system.add_listener(WinGame(win_game));
+    event_system.add_listener(LoseGame(lose_game));
 }

@@ -1,4 +1,4 @@
-use crate::command_system::commands::Command;
+use crate::{command_system::commands::Command, event_system::{event_manager::get_event_system, events::EventType}};
 
 /// A way for the player to move locations.
 /// Moves the player to the scene marked "right"
@@ -15,7 +15,8 @@ impl Command for CommandProfile {
             "pr".to_string()
         ]
     }
-    fn call_command(&self, _params: &String) {
 
+    fn call_command(&self, _params: &String) {
+        get_event_system().invoke(EventType::OnMoveScenesRequest(crate::scene_system::scene_id::SceneId::ProfileSelect))
     }
 }

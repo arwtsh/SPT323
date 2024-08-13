@@ -1,3 +1,5 @@
+use assets::event_system::event_manager::EventSystem;
+use assets::event_system::events::EventType;
 use assets::scene_system::scene_id::SceneId;
 use assets::scene_system::scene_template::{SceneData, Scene};
 
@@ -22,7 +24,10 @@ pub fn get_scene() -> Box<dyn Scene> {
 pub struct Scene8;
 
 impl Scene for Scene8 {
-    fn enter_scene(&self) {
+    fn enter_scene(&self, _event_system: &mut EventSystem) {
         println!("The wolf corners you, and with a snarl says: \"I rarely get to eat something as large as you. I will feast well tonight.");
+        println!("GAME OVER");
+
+        _event_system.invoke(EventType::LoseGame);
     }
 }

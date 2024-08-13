@@ -1,3 +1,5 @@
+use assets::event_system::event_manager::EventSystem;
+use assets::event_system::events::EventType;
 use assets::scene_system::scene_id::SceneId;
 use assets::scene_system::scene_template::{SceneData, Scene};
 
@@ -21,9 +23,17 @@ pub fn get_scene() -> Box<dyn Scene> {
 pub struct Scene2;
 
 impl Scene for Scene2 {
-    fn enter_scene(&self) {
+    fn enter_scene(&self, _event_system: &mut EventSystem) {
         println!("You walk along the path until you find a thick bog. 
         It looks like there's a dry path leading deeper into the bog to the LEFT.");
         println!("To the RIGHT is a path that goes the long way around the bog.");
+    }
+
+    fn move_left(&self, _event_system: &mut EventSystem) {
+        _event_system.invoke(EventType::OnMoveScenesRequest(SceneId::Scene3));
+    }
+
+    fn move_right(&self, _event_system: &mut EventSystem) {
+        _event_system.invoke(EventType::OnMoveScenesRequest(SceneId::Scene5));
     }
 }

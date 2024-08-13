@@ -8,5 +8,7 @@ pub enum EventType {
     MoveLeft,
     MoveRight,
     OnApplicationShutdown,
-    QuitApplication
+    QuitApplication,
+    LoseGame,
+    WinGame
 }

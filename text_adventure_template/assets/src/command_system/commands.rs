@@ -5,6 +5,11 @@ pub mod command_left;
 pub mod command_play;
 pub mod command_profile;
 pub mod command_right;
+pub mod command_profile_delete;
+pub mod command_profile_load;
+pub mod command_profile_new;
+pub mod command_profile_cancel;
+pub mod command_return;
 
 use std::slice::Iter;
 
@@ -18,7 +23,12 @@ pub enum CommandId {
     Right,
     Play,
     Credits,
-    Profile
+    Profile,
+    ProfileDelete,
+    ProfileNew,
+    ProfileLoad,
+    ProfileCancel,
+    Return
 }
 
 impl CommandId {
@@ -33,7 +43,12 @@ impl CommandId {
             CommandId::Right => "Right",
             CommandId::Credits => "Credits",
             CommandId::Play => "Play",
-            CommandId::Profile => "Profile"
+            CommandId::Profile => "Profile",
+            CommandId::ProfileDelete => "ProfileDelete",
+            CommandId::ProfileNew => "ProfileNew",
+            CommandId::ProfileLoad => "ProfileLoad",
+            CommandId::ProfileCancel => "ProfileCancel",
+            CommandId::Return => "ReturnToMainMenu"
         }
     }
 
@@ -47,7 +62,12 @@ impl CommandId {
             CommandId::Right => Box::new(command_right::CommandRight),
             CommandId::Credits => Box::new(command_credits::CommandCredits),
             CommandId::Play => Box::new(command_play::CommandPlay),
-            CommandId::Profile => Box::new(command_profile::CommandProfile)
+            CommandId::Profile => Box::new(command_profile::CommandProfile),
+            CommandId::ProfileDelete => Box::new(command_profile_delete::CommandProfileDelete),
+            CommandId::ProfileLoad => Box::new(command_profile_load::CommandProfileLoad),
+            CommandId::ProfileNew => Box::new(command_profile_new::CommandProfileNew),
+            CommandId::ProfileCancel => Box::new(command_profile_cancel::CommandProfileCancel),
+            CommandId::Return => Box::new(command_return::CommandReturn)
         }
     }
 
@@ -55,14 +75,19 @@ impl CommandId {
     /// This is useful for initializing all the commands at game start.
     /// This does not include the None command.
     pub fn iter() -> Iter<'static, CommandId> {
-        static COMMANDS: [CommandId; 7] = [
+        static COMMANDS: [CommandId; 12] = [
             CommandId::Exit,
             CommandId::Help,
             CommandId::Left,
             CommandId::Right,
             CommandId::Credits,
             CommandId::Play,
-            CommandId::Profile
+            CommandId::Profile,
+            CommandId::ProfileDelete,
+            CommandId::ProfileLoad,
+            CommandId::ProfileNew,
+            CommandId::ProfileCancel,
+            CommandId::Return
         ];
         COMMANDS.iter()
     }
