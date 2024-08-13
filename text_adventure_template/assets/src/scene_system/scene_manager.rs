@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use crate::event_system::generated::EventDelegate::{OnGameStart, OnMoveScenesRequest};
-use crate::event_system::event_manager::EventSystem;
+use crate::event_system::event_manager::{get_mut_event_system, EventSystem};
 use crate::save_system::save_system::get_mut_save_system;
 use crate::scene_system::{scene_id::SceneId, scene_template::Scene};
 use crate::scene_system::scene_template::SceneData;
@@ -128,29 +128,47 @@ fn move_scenes(move_to: SceneId) {
 
     //Tell the current scene that it is exiting.
     if let Some(scene) = scene_manager.current_scene.get_static_scene() { //Handle static scene
-        scene.exit_scene();
+        scene.exit_scene(get_mut_event_system());
     } else {
-        scene_manager.scene_loader.get_scene(scene_manager.current_scene).exit_scene(); //Handle dynamic scene
-    }
-
-    //The the new scene that it is entering
-    if let Some(scene) = move_to.get_static_scene() { //Handle static scene
-        scene.enter_scene();
-    } else {
-        scene_manager.scene_loader.get_scene(move_to).enter_scene(); //Handle dynamic scene
+        scene_manager.scene_loader.get_scene(scene_manager.current_scene).exit_scene(get_mut_event_system()); //Handle dynamic scene
     }
 
     //Set new current scene
     scene_manager.current_scene = move_to;
     get_mut_save_system().set_current_scene(move_to);
+
+    //The the new scene that it is entering
+    if let Some(scene) = move_to.get_static_scene() { //Handle static scene
+        scene.enter_scene(get_mut_event_system());
+    } else {
+        scene_manager.scene_loader.get_scene(move_to).enter_scene(get_mut_event_system()); //Handle dynamic scene
+    }
 }
 
 /// Add listeners to all the events the scene manager will use.
 pub fn setup_events(event_system: &mut EventSystem) {
     //When the game starts, make the scene the main menu.
     event_system.add_listener(OnGameStart(|| {
-        get_scene_manager().main_menu.enter_scene();
+        get_scene_manager().main_menu.enter_scene(get_mut_event_system());
     }));
 
     event_system.add_listener(OnMoveScenesRequest(move_scenes));
+
+    //Tell the scene the player wants to move left.
+    event_system.add_listener(crate::event_system::generated::EventDelegate::MoveLeft(|| {
+        if let Some(scene) = get_scene_manager().current_scene.get_static_scene() { //Handle static scene
+            scene.move_left(get_mut_event_system());
+        } else {
+            get_mut_scene_manager().scene_loader.get_scene(get_scene_manager().current_scene).move_left(get_mut_event_system()); //Handle dynamic scene
+        }
+    }));
+
+    //Tell the scene the player wants to move right.
+    event_system.add_listener(crate::event_system::generated::EventDelegate::MoveRight(|| {
+        if let Some(scene) = get_scene_manager().current_scene.get_static_scene() { //Handle static scene
+            scene.move_right(get_mut_event_system());
+        } else {
+            get_mut_scene_manager().scene_loader.get_scene(get_scene_manager().current_scene).move_right(get_mut_event_system()); //Handle dynamic scene
+        }
+    }));
 }

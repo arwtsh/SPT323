@@ -1,3 +1,4 @@
+use log::warn;
 use serde::{Deserialize, Serialize};
 use crate::scene_system::scene_id::{SceneId, STARTING_SCENE};
 
@@ -30,7 +31,8 @@ impl SaveSystem {
         //Only update if the scene is saveable.
         if new_scene.is_saveable() {
             self.get_mut_profile().player_data.current_scene = new_scene;
-            self.get_mut_profile_wrapper().has_changed = true;
+            //self.get_mut_profile_wrapper().has_changed = true;
+            self.save_profile();
         }
     }
 }

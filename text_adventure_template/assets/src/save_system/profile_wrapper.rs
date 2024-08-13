@@ -65,6 +65,7 @@ impl SaveSystem {
     /// Flag the profile data as default.
     /// Next time it is retrieved, it will return the default profile.
     pub fn reset_profile(&mut self) {
+        println!("test");
         self.get_mut_profile_wrapper().content = None;
     }
 

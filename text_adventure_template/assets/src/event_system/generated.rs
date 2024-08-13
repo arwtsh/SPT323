@@ -7,7 +7,9 @@ pub enum EventDelegate {
     MoveLeft(fn()),
     MoveRight(fn()),
     OnApplicationShutdown(fn()),
-    QuitApplication(fn())
+    QuitApplication(fn()),
+    WinGame(fn()),
+    LoseGame(fn())
 }
 
 pub struct AllEvents {
@@ -16,7 +18,9 @@ pub struct AllEvents {
     move_left: Vec<fn()>,
     move_right: Vec<fn()>,
     on_application_shutdown: Vec<fn()>,
-    quit_application: Vec<fn()>
+    quit_application: Vec<fn()>,
+    win_game: Vec<fn()>,
+    lose_game: Vec<fn()>
 }
 
 impl AllEvents {
@@ -27,7 +31,9 @@ impl AllEvents {
             move_left: Vec::new(),
             move_right: Vec::new(),
             on_application_shutdown: Vec::new(),
-            quit_application: Vec::new()
+            quit_application: Vec::new(),
+            win_game: Vec::new(),
+            lose_game: Vec::new()
         }
     }
 
@@ -63,6 +69,16 @@ impl AllEvents {
                 for func in self.quit_application.iter() {
                     func();
                 }
+            },
+            EventType::WinGame => {
+                for func in self.win_game.iter() {
+                    func();
+                }
+            },
+            EventType::LoseGame => {
+                for func in self.lose_game.iter() {
+                    func();
+                }
             }
         }
     }
@@ -74,7 +90,9 @@ impl AllEvents {
             EventDelegate::MoveLeft(func) => self.move_left.push(func),
             EventDelegate::MoveRight(func) => self.move_right.push(func),
             EventDelegate::OnApplicationShutdown(func) => self.on_application_shutdown.push(func),
-            EventDelegate::QuitApplication(func) => self.quit_application.push(func)
+            EventDelegate::QuitApplication(func) => self.quit_application.push(func),
+            EventDelegate::WinGame(func) => self.win_game.push(func),
+            EventDelegate::LoseGame(func) => self.lose_game.push(func)
         }
     }
 }

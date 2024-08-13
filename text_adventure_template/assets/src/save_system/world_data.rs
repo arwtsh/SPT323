@@ -48,7 +48,8 @@ impl SaveSystem {
             Some(old_value) => flag != old_value,
             None => true
         } {
-            self.get_mut_profile_wrapper().has_changed = true;
+            //self.get_mut_profile_wrapper().has_changed = true;
+            self.save_profile();
         }
     }
 }

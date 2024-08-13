@@ -1,4 +1,4 @@
-use log::trace;
+use log::{info, trace};
 
 use crate::event_system::generated::{AllEvents, EventDelegate};
 use crate::event_system::events::EventType;
@@ -8,15 +8,10 @@ static mut INSTANCE: Option<EventSystem> = Option::None;
 
 /// Get the EventSystem singleton as immutable.
 pub fn get_event_system() -> &'static EventSystem {
-    let event_system: &EventSystem;
     unsafe {
         //Initialize EventSystem if it hasn't been already.
-        if INSTANCE.is_none() {
-            INSTANCE = Option::Some(EventSystem::new());
-        }
-        event_system = INSTANCE.as_ref().unwrap();
+        INSTANCE.get_or_insert_with(|| EventSystem::new())
     }
-    event_system
 }
 
 /// Get the EventSystem singleton as mutable.
@@ -41,7 +36,7 @@ pub struct EventSystem {
 
 impl EventSystem {
     pub fn new() -> Self {
-        trace!("Initialized event system");
+        info!("Initialized event system");
         Self {
             subscribed_events: AllEvents::new()
         }
@@ -54,6 +49,6 @@ impl EventSystem {
 
     /// Invoke the specified event
     pub fn invoke(&self, event: EventType) {
-        self.subscribed_events.broadcast(event)
+        self.subscribed_events.broadcast(event);
     }
 }

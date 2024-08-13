@@ -1,4 +1,4 @@
-use crate::command_system::commands::Command;
+use crate::{command_system::{command_manager::get_mut_command_manager, command_schemes::CommandSchemes, commands::Command}, event_system::{event_manager::get_event_system, events::EventType}, save_system::save_system::get_save_system};
 
 /// Immediately exits the application.
 pub struct CommandPlay;
@@ -19,6 +19,9 @@ impl Command for CommandPlay {
         ]
     }
     fn call_command(&self, _params: &String) {
-
+        //Set the commands to be gameplay
+        get_mut_command_manager().active_commands_scheme = CommandSchemes::Gameplay;
+        //Move to the scene listed as the last entered gameplay scene.
+        get_event_system().invoke(EventType::OnMoveScenesRequest(get_save_system().get_current_scene()));
     }
 }

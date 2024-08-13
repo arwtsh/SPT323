@@ -1,6 +1,3 @@
-use crate::event_system::event_manager::get_event_system;
-use crate::event_system::events::EventType::QuitApplication;
-
 use crate::command_system::commands::Command;
 
 /// Immediately exits the application.
@@ -17,6 +14,6 @@ impl Command for CommandCredits {
         ]
     }
     fn call_command(&self, _params: &String) {
-        get_event_system().invoke(QuitApplication);
+        println!("Made by Adam White.");
     }
 }

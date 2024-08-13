@@ -9,6 +9,7 @@ pub mod command_profile_delete;
 pub mod command_profile_load;
 pub mod command_profile_new;
 pub mod command_profile_cancel;
+pub mod command_return;
 
 use std::slice::Iter;
 
@@ -26,7 +27,8 @@ pub enum CommandId {
     ProfileDelete,
     ProfileNew,
     ProfileLoad,
-    ProfileCancel
+    ProfileCancel,
+    Return
 }
 
 impl CommandId {
@@ -45,7 +47,8 @@ impl CommandId {
             CommandId::ProfileDelete => "ProfileDelete",
             CommandId::ProfileNew => "ProfileNew",
             CommandId::ProfileLoad => "ProfileLoad",
-            CommandId::ProfileCancel => "ProfileCancel"
+            CommandId::ProfileCancel => "ProfileCancel",
+            CommandId::Return => "ReturnToMainMenu"
         }
     }
 
@@ -63,7 +66,8 @@ impl CommandId {
             CommandId::ProfileDelete => Box::new(command_profile_delete::CommandProfileDelete),
             CommandId::ProfileLoad => Box::new(command_profile_load::CommandProfileLoad),
             CommandId::ProfileNew => Box::new(command_profile_new::CommandProfileNew),
-            CommandId::ProfileCancel => Box::new(command_profile_cancel::CommandProfileCancel)
+            CommandId::ProfileCancel => Box::new(command_profile_cancel::CommandProfileCancel),
+            CommandId::Return => Box::new(command_return::CommandReturn)
         }
     }
 
@@ -71,7 +75,7 @@ impl CommandId {
     /// This is useful for initializing all the commands at game start.
     /// This does not include the None command.
     pub fn iter() -> Iter<'static, CommandId> {
-        static COMMANDS: [CommandId; 11] = [
+        static COMMANDS: [CommandId; 12] = [
             CommandId::Exit,
             CommandId::Help,
             CommandId::Left,
@@ -82,7 +86,8 @@ impl CommandId {
             CommandId::ProfileDelete,
             CommandId::ProfileLoad,
             CommandId::ProfileNew,
-            CommandId::ProfileCancel
+            CommandId::ProfileCancel,
+            CommandId::Return
         ];
         COMMANDS.iter()
     }

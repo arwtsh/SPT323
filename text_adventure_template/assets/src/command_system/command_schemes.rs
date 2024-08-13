@@ -62,7 +62,8 @@ impl CommandSchemes {
                 HashSet::from_iter(vec![
                     CommandId::Left,
                     CommandId::Right,
-                    CommandId::Help
+                    CommandId::Help,
+                    CommandId::Return
                 ])
             },
             CommandSchemes::ProfileSelect => {
@@ -89,7 +90,7 @@ impl CommandSchemes {
             "You will be given a text description of a scene.
             \nYou will chose to go either RIGHT or LEFT.
             \nHELP repeats these tips.
-            \nQUIT closes the game.",
+            \nRETURN goes back to the main menu.",
             CommandSchemes::ProfileSelect => 
             "LOAD + selection loads the new profile.
             \nDELETE + selection will delete that profile.

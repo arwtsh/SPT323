@@ -1,4 +1,4 @@
-use crate::event_system::event_manager::get_event_system;
+use crate::event_system::event_manager::{get_event_system, EventSystem};
 use crate::event_system::events::EventType;
 use crate::save_system::save_system::get_save_system;
 use crate::scene_system::scene_template::Scene;
@@ -14,7 +14,7 @@ impl MainMenu {
 }
 
 impl Scene for MainMenu {
-    fn enter_scene(&self) {
+    fn enter_scene(&self, _event_system: &mut EventSystem) {
         get_mut_command_manager().active_commands_scheme = CommandSchemes::MainMenu;
 
         println!("DARK FOREST.");

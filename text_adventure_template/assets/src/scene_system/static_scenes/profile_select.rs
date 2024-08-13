@@ -1,3 +1,4 @@
+use crate::event_system::event_manager::EventSystem;
 use crate::save_system::save_system::get_save_system;
 use crate::save_system::util::get_all_profiles;
 use crate::scene_system::scene_template::Scene;
@@ -13,7 +14,7 @@ impl ProfileSelect {
 }
 
 impl Scene for ProfileSelect {
-    fn enter_scene(&self) {
+    fn enter_scene(&self, _event_system: &mut EventSystem) {
         //Print out the profiles on the drive
         println!("All profiles: ");
         let all_profiles = get_all_profiles();
